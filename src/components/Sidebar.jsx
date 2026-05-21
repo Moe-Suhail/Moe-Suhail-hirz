@@ -7,7 +7,7 @@ export default function Sidebar({ views, activeView, progress, theme, onThemeTog
       <div className="brand">
         <img className="brand-logo" src="./hirz-logo.webp" alt="لوقو حرز" />
         <div>
-          <h1>حرز</h1>
+          <h1>حِرْز</h1>
           <p>أذكار وقرآن</p>
           <small>تصميم وتطوير محمد عادل حسن طه</small>
         </div>
