@@ -6,9 +6,10 @@ export default function Topbar({ label, title, query, searchPlaceholder, onQuery
     <header className="topbar">
       <div className="hero-brand">
         <img src="./hirz-logo.webp" alt="لوقو حرز" />
-        <div>
+        <div className="hero-brand-copy">
           <strong>حِرْز</strong>
-          <span>تصميم وتطوير محمد عادل حسن طه</span>
+          <span>أذكار وقرآن</span>
+          <small>تصميم وتطوير محمد عادل حسن طه</small>
         </div>
       </div>
 
