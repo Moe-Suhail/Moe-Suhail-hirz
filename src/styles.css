@@ -459,6 +459,10 @@ svg {
   justify-items: center;
 }
 
+.smart-footer {
+  display: none;
+}
+
 .category-strip,
 .tasbeeh-phrases {
   display: flex;
@@ -1047,6 +1051,81 @@ svg {
 
   .search-box {
     width: 100%;
+  }
+
+  .smart-footer {
+    display: grid;
+    gap: 12px;
+    margin: 22px 0 0;
+  }
+
+  .smart-footer-progress,
+  .smart-footer-dedication,
+  .smart-footer-theme,
+  .smart-footer-copyright {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--warm-glass);
+    box-shadow: var(--shadow);
+    backdrop-filter: var(--glass);
+  }
+
+  .smart-footer-progress {
+    display: grid;
+    gap: 7px;
+    padding: 13px 14px;
+  }
+
+  .smart-footer-progress span {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .smart-footer-progress strong {
+    color: var(--accent-deep);
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .smart-footer-theme {
+    min-height: 44px;
+    color: var(--accent-deep);
+    font-weight: 800;
+  }
+
+  .smart-footer-dedication {
+    display: grid;
+    gap: 5px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .smart-footer-dedication span,
+  .smart-footer-dedication p:last-child {
+    color: var(--gold);
+    font-weight: 800;
+  }
+
+  .smart-footer-dedication p,
+  .smart-footer-dedication strong {
+    margin: 0;
+  }
+
+  .smart-footer-dedication p {
+    color: var(--muted);
+  }
+
+  .smart-footer-dedication strong {
+    color: var(--ink);
+    font-size: 19px;
+  }
+
+  .smart-footer-copyright {
+    margin: 0;
+    padding: 10px 12px;
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
   }
 }
 
