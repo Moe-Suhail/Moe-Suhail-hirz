@@ -9,6 +9,7 @@ export default function Sidebar({ views, activeView, progress, theme, onThemeTog
         <div>
           <h1>حرز</h1>
           <p>أذكار وقرآن</p>
+          <small>تصميم وتطوير محمد عادل حسن طه</small>
         </div>
       </div>
 
@@ -41,8 +42,6 @@ export default function Sidebar({ views, activeView, progress, theme, onThemeTog
         {theme === "dark" ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
         <span>{theme === "dark" ? "الوضع النهاري" : "الوضع الليلي"}</span>
       </button>
-
-      <p className="copyright">جميع الحقوق محفوظة محمد عادل حسن طه</p>
 
       <div className="daily-card">
         <span>ورد اليوم</span>
