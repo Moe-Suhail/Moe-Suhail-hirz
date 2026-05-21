@@ -349,8 +349,8 @@ svg {
   position: absolute;
   inset: 0;
   background: url("../header-mushaf.png") left center / cover no-repeat;
-  filter: blur(1px) saturate(1.05) contrast(1.03);
-  opacity: 0.46;
+  filter: blur(3px) saturate(0.92);
+  opacity: 0.3;
   pointer-events: none;
 }
 
@@ -360,8 +360,8 @@ svg {
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(112deg, rgba(255, 253, 244, 0.18) 0 36%, rgba(255, 255, 255, 0.36) 50%, rgba(255, 253, 244, 0.14) 66%),
-    radial-gradient(circle at 86% 18%, rgba(255, 255, 255, 0.36), transparent 24%);
+    linear-gradient(112deg, transparent 0 42%, rgba(255, 255, 255, 0.34) 50%, transparent 62%),
+    radial-gradient(circle at 86% 18%, rgba(255, 255, 255, 0.42), transparent 24%);
   mix-blend-mode: screen;
 }
 
@@ -1027,7 +1027,7 @@ svg {
   .topbar::before {
     background-size: 120% auto;
     background-position: center top;
-    opacity: 0.34;
+    opacity: 0.18;
   }
 
   .surah-list {
