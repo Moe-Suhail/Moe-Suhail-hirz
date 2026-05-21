@@ -275,37 +275,43 @@ export default function App() {
         />
 
         <section className="header-info-panel" aria-label="معلومات حرز">
-          <div className="header-info-dedication">
+          <div className="header-info-card">
+            <div className="header-info-dedication">
             <span>صدقة جارية لروح جدي و جدتي</span>
             <strong>عبد الرحمن محمد احمد</strong>
             <strong>ست النور محمد عثمان</strong>
             <p>ولجميع أمواتنا وأموات المسلمين</p>
-          </div>
-          <div className="header-info-progress">
-            <span>ورد اليوم</span>
-            <strong>{progress}%</strong>
-            <div className="progress-track" aria-hidden="true">
-              <div style={{ width: `${progress}%` }} />
+            </div>
+            <div className="header-info-progress">
+              <span>ورد اليوم</span>
+              <strong>{progress}%</strong>
+              <div className="progress-track" aria-hidden="true">
+                <div style={{ width: `${progress}%` }} />
+              </div>
             </div>
           </div>
         </section>
 
         {activeView === "adhkar" && (
           <section className="view-stack">
-            <div className="collection-grid">
-              {dhikrCategories.map((item) => (
-                <button
-                  className={`collection-card ${category === item.id ? "active" : ""}`}
-                  type="button"
-                  key={item.id}
-                  onClick={() => setCategory(item.id)}
-                >
-                  <strong>{item.label}</strong>
-                  <span>{item.description}</span>
-                  <small>{formatDhikrCount(item.count)}</small>
-                </button>
-              ))}
-            </div>
+            {dhikrCategories.length > 0 && (
+              <div className="collection-panel">
+                <div className="collection-grid">
+                  {dhikrCategories.map((item) => (
+                    <button
+                      className={`collection-card ${category === item.id ? "active" : ""}`}
+                      type="button"
+                      key={item.id}
+                      onClick={() => setCategory(item.id)}
+                    >
+                      <strong>{item.label}</strong>
+                      <span>{item.description}</span>
+                      <small>{formatDhikrCount(item.count)}</small>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="dhikr-stack">
               <div className="selected-collection-title">
                 <h3>{dhikrCategories.find((item) => item.id === category)?.label || "أذكار الصباح"}</h3>
