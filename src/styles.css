@@ -79,6 +79,9 @@ input {
 
 button {
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
 }
 
 img,
@@ -904,6 +907,9 @@ svg {
   color: inherit;
   cursor: pointer;
   transition: transform 160ms ease, box-shadow 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  outline: none;
 }
 
 :root[data-theme="dark"] .tasbeeh-ring {
@@ -929,6 +935,12 @@ svg {
 
 .tasbeeh-ring:active {
   transform: scale(0.985);
+}
+
+.tasbeeh-ring:focus-visible {
+  box-shadow:
+    0 0 0 4px rgba(106, 169, 150, 0.22),
+    0 22px 48px rgba(40, 85, 75, 0.14);
 }
 
 .tasbeeh-ring span {
@@ -1192,6 +1204,19 @@ svg {
   .mushaf-text {
     font-size: 24px;
     line-height: 2.25;
+  }
+
+  .tasbeeh-ring {
+    transition: transform 90ms ease;
+  }
+
+  .tasbeeh-ring:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .tasbeeh-ring:active {
+    transform: scale(0.97);
   }
 
   .nav-tab {
