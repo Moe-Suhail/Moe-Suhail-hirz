@@ -348,7 +348,7 @@ svg {
   content: "";
   position: absolute;
   inset: 0;
-  background: url("/header-mushaf.png") left center / cover no-repeat;
+  background: url("../header-mushaf.png") left center / cover no-repeat;
   filter: blur(3px) saturate(0.92);
   opacity: 0.3;
   pointer-events: none;
