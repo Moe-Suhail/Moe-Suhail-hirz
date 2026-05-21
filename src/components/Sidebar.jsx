@@ -5,7 +5,7 @@ export default function Sidebar({ views, activeView, progress, theme, onThemeTog
   return (
     <aside className="sidebar" aria-label="التنقل الرئيسي">
       <div className="brand">
-        <img className="brand-logo" src="./hirz-logo.png" alt="لوقو حرز" />
+        <img className="brand-logo" src="./hirz-logo.webp" alt="لوقو حرز" />
         <div>
           <h1>حرز</h1>
           <p>أذكار وقرآن</p>
@@ -14,8 +14,7 @@ export default function Sidebar({ views, activeView, progress, theme, onThemeTog
       </div>
 
       <div className="dedication-card">
-        <span>صدقة جارية</span>
-        <p className="dedication-line">لروح جدي و جدتي</p>
+        <span>صدقة جارية لروح جدي و جدتي</span>
         <strong>عبد الرحمن محمد احمد</strong>
         <strong>ست النور محمد عثمان</strong>
         <p className="dedication-dua">ولجميع أمواتنا وأموات المسلمين</p>
