@@ -198,23 +198,26 @@ svg {
 
 .dedication-card {
   display: grid;
-  gap: 10px;
+  gap: 6px;
   align-content: start;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 16px;
+  border-radius: 14px;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(244, 218, 157, 0.13)),
-    rgba(255, 255, 255, 0.08);
-  padding: 18px 16px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(244, 218, 157, 0.16)),
+    rgba(255, 255, 255, 0.1);
+  padding: 16px 14px 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 16px 30px rgba(14, 46, 39, 0.12);
   backdrop-filter: var(--glass);
   text-align: center;
 }
 
 .dedication-card span {
   color: #f4da9d;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 800;
+  line-height: 1.45;
 }
 
 .dedication-card p,
@@ -224,15 +227,15 @@ svg {
 
 .dedication-card strong {
   color: #fff;
-  font-size: 22px;
-  line-height: 1.55;
+  font-size: 18px;
+  line-height: 1.5;
   font-weight: 800;
 }
 
 .dedication-card p {
   color: rgba(255, 255, 255, 0.82);
-  font-size: 16px;
-  line-height: 1.8;
+  font-size: 17px;
+  line-height: 1.6;
 }
 
 .dedication-line {
@@ -241,12 +244,12 @@ svg {
 
 .dedication-dua {
   align-self: end;
-  margin-top: 8px;
+  margin-top: 7px;
   border-top: 1px solid rgba(255, 255, 255, 0.16);
-  padding-top: 12px;
+  padding-top: 10px;
   color: #f4da9d;
   text-align: center;
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 800;
 }
 
@@ -332,8 +335,8 @@ svg {
   position: relative;
   overflow: hidden;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) minmax(260px, 390px);
-  align-items: end;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1fr) minmax(260px, 390px);
+  align-items: center;
   justify-content: space-between;
   gap: 22px;
   margin-bottom: 24px;
@@ -341,8 +344,8 @@ svg {
   border: 1px solid var(--line);
   border-radius: 16px;
   background:
-    linear-gradient(105deg, rgba(255, 255, 255, 0.7), rgba(255, 249, 230, 0.48)),
-    var(--panel);
+    linear-gradient(105deg, rgba(255, 255, 255, 0.46), rgba(255, 249, 230, 0.28)),
+    rgba(255, 255, 255, 0.26);
   padding: 28px;
   box-shadow: var(--shadow);
   backdrop-filter: var(--glass);
@@ -352,9 +355,9 @@ svg {
   content: "";
   position: absolute;
   inset: 0;
-  background: url("../header-mushaf.png") left center / cover no-repeat;
-  filter: blur(1.6px) saturate(1.02) contrast(1.02);
-  opacity: 0.38;
+  background: url("../header-mushaf.webp") left center / cover no-repeat;
+  filter: blur(0.12px) saturate(1.08) contrast(1.05);
+  opacity: 0.58;
   pointer-events: none;
 }
 
@@ -375,22 +378,22 @@ svg {
   display: flex;
   align-items: center;
   gap: 14px;
-  min-width: 230px;
-  border: 1px solid rgba(255, 255, 255, 0.48);
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.36);
   border-radius: 16px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 249, 230, 0.38)),
-    rgba(255, 255, 255, 0.34);
-  padding: 12px 14px;
+    linear-gradient(135deg, rgba(40, 85, 75, 0.2), rgba(255, 249, 230, 0.18)),
+    rgba(255, 255, 255, 0.18);
+  padding: 10px 12px;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.56),
     0 18px 34px rgba(88, 83, 49, 0.12);
   backdrop-filter: var(--glass);
 }
 
 .hero-brand img {
-  width: 64px;
-  height: 64px;
+  width: 58px;
+  height: 58px;
   border-radius: 14px;
   object-fit: cover;
   border: 1px solid rgba(255, 255, 255, 0.62);
@@ -399,7 +402,7 @@ svg {
 .hero-brand strong {
   display: block;
   color: var(--accent-deep);
-  font-size: 42px;
+  font-size: 46px;
   line-height: 0.95;
   text-shadow:
     0 1px 0 rgba(255, 255, 255, 0.82),
@@ -408,9 +411,10 @@ svg {
 
 .hero-brand span {
   display: block;
-  margin-top: 7px;
-  color: var(--muted);
-  font-size: 13px;
+  margin-top: 6px;
+  color: var(--accent-deep);
+  font-size: 12.5px;
+  font-weight: 700;
   line-height: 1.35;
 }
 
@@ -524,7 +528,7 @@ svg {
 
 .header-info-panel {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 160px;
+  grid-template-columns: minmax(0, 1fr) 132px;
   align-items: stretch;
   gap: 12px;
   width: min(1080px, 100%);
@@ -544,7 +548,7 @@ svg {
   display: grid;
   align-content: center;
   gap: 6px;
-  padding: 10px 12px;
+  padding: 9px 11px;
 }
 
 .header-info-progress span {
@@ -554,7 +558,7 @@ svg {
 
 .header-info-progress strong {
   color: var(--accent-deep);
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1;
 }
 
@@ -562,8 +566,9 @@ svg {
   display: grid;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 16px 18px;
+  gap: 4px;
+  min-height: 96px;
+  padding: 12px 18px;
   text-align: center;
 }
 
@@ -571,6 +576,11 @@ svg {
 .header-info-dedication p:last-child {
   color: var(--gold);
   font-weight: 800;
+}
+
+.header-info-dedication span {
+  font-size: 16px;
+  line-height: 1.45;
 }
 
 .header-info-dedication p,
@@ -584,8 +594,13 @@ svg {
 
 .header-info-dedication strong {
   color: var(--ink);
-  font-size: 20px;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.header-info-dedication p {
   line-height: 1.45;
+  font-size: 16px;
 }
 
 :root[data-theme="dark"] .topbar {
@@ -603,6 +618,11 @@ svg {
 :root[data-theme="dark"] .header-info-dedication p,
 :root[data-theme="dark"] .header-info-progress span {
   color: #eef7f1;
+}
+
+:root[data-theme="dark"] .header-info-dedication span,
+:root[data-theme="dark"] .header-info-dedication p:last-child {
+  color: #e1bd72;
 }
 
 :root[data-theme="dark"] .header-theme-toggle {
@@ -646,23 +666,25 @@ svg {
 
 .collection-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
-  width: min(960px, 100%);
-  max-width: 960px;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  gap: 10px;
+  width: min(900px, 100%);
+  max-width: 900px;
 }
 
 .collection-card {
   position: relative;
   overflow: hidden;
   display: grid;
-  gap: 7px;
-  min-height: 104px;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 3px 10px;
+  min-height: 76px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--warm-glass, linear-gradient(135deg, rgba(255, 255, 255, 0.68), rgba(255, 249, 230, 0.74)), rgba(255, 250, 235, 0.72));
   color: var(--ink);
-  padding: 16px;
+  padding: 13px 15px;
   text-align: right;
   box-shadow: 0 12px 28px rgba(40, 85, 75, 0.09);
   backdrop-filter: var(--glass);
@@ -684,18 +706,22 @@ svg {
 }
 
 .collection-card strong {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
 }
 
 .collection-card span {
   color: var(--muted);
-  font-size: 14px;
+  font-size: 13px;
+  grid-column: 1 / -1;
 }
 
 .collection-card small {
   color: var(--gold);
   font-weight: 800;
+  grid-row: 1;
+  grid-column: 2;
+  white-space: nowrap;
 }
 
 .collection-card.active {
@@ -1266,8 +1292,8 @@ svg {
   .topbar::before {
     background-size: 120% auto;
     background-position: center top;
-    opacity: 0.28;
-    filter: blur(1px) saturate(1.02);
+    opacity: 0.42;
+    filter: none;
   }
 
   .header-actions {
@@ -1282,6 +1308,18 @@ svg {
   .header-info-dedication {
     display: grid;
     gap: 4px;
+    min-height: 0;
+    padding: 12px;
+  }
+
+  .header-info-progress {
+    grid-template-columns: auto auto minmax(64px, 1fr);
+    align-items: center;
+    padding: 10px 12px;
+  }
+
+  .header-info-progress strong {
+    font-size: 20px;
   }
 
   .surah-list {
@@ -1416,7 +1454,7 @@ svg {
   }
 
   .collection-card {
-    min-height: 106px;
+    min-height: 82px;
     padding: 12px;
   }
 
@@ -1453,6 +1491,11 @@ svg {
 
   .header-info-dedication strong {
     font-size: 16px;
+  }
+
+  .header-info-dedication span,
+  .header-info-dedication p {
+    font-size: 14px;
   }
 
   .dhikr-actions {
