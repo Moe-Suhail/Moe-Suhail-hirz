@@ -52,6 +52,19 @@ function semanticMatch(haystack, query) {
   return tokens.every((token) => normalizedHaystack.includes(token));
 }
 
+function formatDhikrCount(count) {
+  if (count === 1) {
+    return "ذكر واحد";
+  }
+  if (count === 2) {
+    return "ذكران";
+  }
+  if (count >= 3 && count <= 10) {
+    return `${count} أذكار`;
+  }
+  return `${count} ذكر`;
+}
+
 export default function App() {
   const [activeView, setActiveView] = useState("adhkar");
   const [category, setCategory] = useState("morning");
@@ -263,8 +276,7 @@ export default function App() {
 
         <section className="header-info-panel" aria-label="معلومات حرز">
           <div className="header-info-dedication">
-            <span>صدقة جارية</span>
-            <p>لروح جدي و جدتي</p>
+            <span>صدقة جارية لروح جدي و جدتي</span>
             <strong>عبد الرحمن محمد احمد</strong>
             <strong>ست النور محمد عثمان</strong>
             <p>ولجميع أمواتنا وأموات المسلمين</p>
@@ -290,7 +302,7 @@ export default function App() {
                 >
                   <strong>{item.label}</strong>
                   <span>{item.description}</span>
-                  <small>{item.count} ذكر</small>
+                  <small>{formatDhikrCount(item.count)}</small>
                 </button>
               ))}
             </div>
@@ -447,8 +459,7 @@ export default function App() {
           </button>
 
           <div className="smart-footer-dedication">
-            <span>صدقة جارية</span>
-            <p>لروح جدي و جدتي</p>
+            <span>صدقة جارية لروح جدي و جدتي</span>
             <strong>عبد الرحمن محمد احمد</strong>
             <strong>ست النور محمد عثمان</strong>
             <p>ولجميع أمواتنا وأموات المسلمين</p>
