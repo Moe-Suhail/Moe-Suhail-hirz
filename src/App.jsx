@@ -361,6 +361,30 @@ export default function App() {
             )}
           </section>
         )}
+
+        <footer className="smart-footer" aria-label="معلومات حرز">
+          <div className="smart-footer-progress">
+            <span>ورد اليوم</span>
+            <strong>{progress}%</strong>
+            <div className="progress-track" aria-hidden="true">
+              <div style={{ width: `${progress}%` }} />
+            </div>
+          </div>
+
+          <button className="smart-footer-theme" type="button" onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}>
+            {theme === "dark" ? "الوضع النهاري" : "الوضع الليلي"}
+          </button>
+
+          <div className="smart-footer-dedication">
+            <span>صدقة جارية</span>
+            <p>لروح جدي و جدتي</p>
+            <strong>عبد الرحمن محمد احمد</strong>
+            <strong>ست النور محمد عثمان</strong>
+            <p>ولجميع أمواتنا وأموات المسلمين</p>
+          </div>
+
+          <p className="smart-footer-copyright">جميع الحقوق محفوظة م. محمد عادل حسن طه</p>
+        </footer>
       </main>
     </div>
   );
