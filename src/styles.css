@@ -486,7 +486,7 @@ svg {
   font-family: "Amiri", "Amiri Quran", Calibri, serif;
   font-size: clamp(64px, 7vw, 94px);
   font-weight: 700;
-  line-height: 0.95;
+  line-height: 1;
   letter-spacing: 0;
   text-shadow:
     0 1px 0 rgba(255, 255, 255, 0.76),
@@ -494,12 +494,39 @@ svg {
   overflow-wrap: anywhere;
 }
 
+.hero-logo-word {
+  display: inline-block;
+  position: relative;
+  direction: rtl;
+  unicode-bidi: isolate;
+  padding-bottom: 0.04em;
+}
+
+.hero-logo-word::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 0.24em;
+  bottom: 0.13em;
+  width: 0.24em;
+  height: 0.05em;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #c6a15b, #1f4d43);
+  transform: rotate(-12deg);
+  transform-origin: center;
+  box-shadow: 0 3px 8px rgba(198, 161, 91, 0.18);
+}
+
 :root[data-theme="dark"] .topbar h2 {
   color: #f1fbf6;
 }
 
+:root[data-theme="dark"] .hero-logo-word::after {
+  background: linear-gradient(90deg, #e1bd72, #f1fbf6);
+  box-shadow: 0 3px 10px rgba(225, 189, 114, 0.2);
+}
+
 .topbar-subtitle {
-  margin: 2px 0 0;
+  margin: 8px 0 0;
   color: #24564b;
   font-family: "Tajawal", Calibri, "Segoe UI", sans-serif;
   font-size: clamp(17px, 2vw, 22px);
@@ -1368,10 +1395,11 @@ svg {
 
   .topbar h2 {
     font-size: 66px;
-    line-height: 0.82;
+    line-height: 0.95;
   }
 
   .topbar-subtitle {
+    margin-top: 6px;
     font-size: 17px;
   }
 
