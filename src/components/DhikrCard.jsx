@@ -1,7 +1,7 @@
 import React from "react";
-import { Check, Star, Target } from "lucide-react";
+import { Check, RotateCcw, Star, Target } from "lucide-react";
 
-export default function DhikrCard({ item, count, isFavorite, onFavorite, onIncrement }) {
+export default function DhikrCard({ item, count, isFavorite, onFavorite, onIncrement, onReset }) {
   const done = count >= item.target;
 
   return (
@@ -21,13 +21,19 @@ export default function DhikrCard({ item, count, isFavorite, onFavorite, onIncre
         <span>{item.target > 1 ? `يكرر ${item.target} مرات` : "مرة واحدة"}</span>
       </div>
 
-      <button className={done ? "done-btn" : "primary-btn"} type="button" onClick={onIncrement}>
-        {done ? <Check size={18} aria-hidden="true" /> : <Target size={18} aria-hidden="true" />}
-        {done ? "تم" : "تكرار"}
-        <span className="button-count">
-          {Math.min(count, item.target)} / {item.target}
-        </span>
-      </button>
+      <div className="dhikr-actions">
+        <button className={done ? "done-btn" : "primary-btn"} type="button" onClick={onIncrement}>
+          {done ? <Check size={18} aria-hidden="true" /> : <Target size={18} aria-hidden="true" />}
+          {done ? "تم" : "تكرار"}
+          <span className="button-count">
+            {Math.min(count, item.target)} / {item.target}
+          </span>
+        </button>
+        <button className="reset-btn" type="button" onClick={onReset} aria-label="تصفير عداد الذكر">
+          <RotateCcw size={17} aria-hidden="true" />
+          تصفير
+        </button>
+      </div>
     </article>
   );
 }
