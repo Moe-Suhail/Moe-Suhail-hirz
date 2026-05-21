@@ -49,7 +49,7 @@ export default function App() {
   const [errors, setErrors] = useState({ dhikr: "", quran: "" });
   const [counts, setCounts] = useState(() => readStorage("hirz-counts", {}));
   const [favorites, setFavorites] = useState(() => readStorage("hirz-favorites", []));
-  const [tasbeeh, setTasbeeh] = useState(() => Number(localStorage.getItem("hirz-tasbeeh") || 0));
+  const [tasbeeh, setTasbeeh] = useState(0);
   const [theme, setTheme] = useState(() => localStorage.getItem("hirz-theme") || "light");
 
   useEffect(() => {
@@ -122,6 +122,17 @@ export default function App() {
     };
   }, [quranPage]);
 
+  useEffect(() => {
+    const firstVerse = pageVerses[0];
+    if (!firstVerse?.surahNumber) {
+      return;
+    }
+    const currentPageSurah = quranChapters.find((surah) => surah.number === firstVerse.surahNumber);
+    if (currentPageSurah && currentPageSurah.id !== selectedSurah) {
+      setSelectedSurah(currentPageSurah.id);
+    }
+  }, [pageVerses, quranChapters, selectedSurah]);
+
   const activeSurah = quranChapters.find((surah) => surah.id === selectedSurah) ?? quranChapters[0];
   const completedCount = dhikrItems.filter((item) => (counts[item.id] || 0) >= item.target).length;
   const progress = dhikrItems.length ? Math.round((completedCount / dhikrItems.length) * 100) : 0;
@@ -162,6 +173,17 @@ export default function App() {
     }
   }, [dhikrItems, favorites, quranChapters]);
 
+  useEffect(() => {
+    const validIds = new Set(dhikrItems.map((item) => item.id));
+    if (!validIds.size) {
+      return;
+    }
+    const cleanCounts = Object.fromEntries(Object.entries(counts).filter(([id]) => validIds.has(id)));
+    if (Object.keys(cleanCounts).length !== Object.keys(counts).length) {
+      saveCounts(cleanCounts);
+    }
+  }, [counts, dhikrItems]);
+
   function saveCounts(nextCounts) {
     setCounts(nextCounts);
     localStorage.setItem("hirz-counts", JSON.stringify(nextCounts));
@@ -183,9 +205,14 @@ export default function App() {
     });
   }
 
+  function resetDhikr(id) {
+    const nextCounts = { ...counts };
+    delete nextCounts[id];
+    saveCounts(nextCounts);
+  }
+
   function updateTasbeeh(nextValue) {
     setTasbeeh(nextValue);
-    localStorage.setItem("hirz-tasbeeh", String(nextValue));
   }
 
   return (
@@ -206,7 +233,27 @@ export default function App() {
           query={query}
           searchPlaceholder={activeView === "quran" ? "ابحث باسم السورة أو الآية" : "ابحث في حرز"}
           onQueryChange={setQuery}
+          theme={theme}
+          onThemeToggle={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
         />
+
+        <section className="header-info-panel" aria-label="معلومات حرز">
+          <div className="header-info-progress">
+            <span>ورد اليوم</span>
+            <strong>{progress}%</strong>
+            <div className="progress-track" aria-hidden="true">
+              <div style={{ width: `${progress}%` }} />
+            </div>
+          </div>
+          <div className="header-info-dedication">
+            <span>صدقة جارية</span>
+            <p>لروح جدي و جدتي</p>
+            <strong>عبد الرحمن محمد احمد</strong>
+            <strong>ست النور محمد عثمان</strong>
+            <p>ولجميع أمواتنا وأموات المسلمين</p>
+          </div>
+          <p className="header-info-copyright">جميع الحقوق محفوظة محمد عادل حسن طه</p>
+        </section>
 
         {activeView === "adhkar" && (
           <section className="view-stack">
@@ -241,6 +288,7 @@ export default function App() {
                     isFavorite={favorites.includes(item.id)}
                     onFavorite={() => toggleFavorite(item.id)}
                     onIncrement={() => incrementDhikr(item)}
+                    onReset={() => resetDhikr(item.id)}
                   />
                 ))
               ) : (
@@ -383,7 +431,7 @@ export default function App() {
             <p>ولجميع أمواتنا وأموات المسلمين</p>
           </div>
 
-          <p className="smart-footer-copyright">جميع الحقوق محفوظة م. محمد عادل حسن طه</p>
+          <p className="smart-footer-copyright">جميع الحقوق محفوظة محمد عادل حسن طه</p>
         </footer>
       </main>
     </div>
