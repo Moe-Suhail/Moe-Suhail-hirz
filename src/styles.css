@@ -505,13 +505,13 @@ svg {
 .hero-logo-word::after {
   content: "";
   position: absolute;
-  inset-inline-end: 0.24em;
-  bottom: 0.13em;
-  width: 0.24em;
+  right: 0.1em;
+  bottom: 0.16em;
+  width: 0.2em;
   height: 0.05em;
   border-radius: 999px;
   background: linear-gradient(90deg, #c6a15b, #1f4d43);
-  transform: rotate(-12deg);
+  transform: rotate(-13deg);
   transform-origin: center;
   box-shadow: 0 3px 8px rgba(198, 161, 91, 0.18);
 }
@@ -589,7 +589,7 @@ svg {
   grid-template-columns: minmax(0, 1fr) 132px;
   align-items: stretch;
   gap: 12px;
-  width: min(1080px, 100%);
+  width: min(940px, 100%);
   margin: -8px auto 22px;
 }
 
@@ -744,10 +744,10 @@ svg {
 
 .collection-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
-  gap: 10px;
-  width: min(900px, 100%);
-  max-width: 900px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: min(940px, 100%);
+  max-width: 940px;
 }
 
 .collection-card {
@@ -1445,6 +1445,11 @@ svg {
 
   .surah-item {
     flex: 0 0 150px;
+  }
+
+  .collection-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 620px;
   }
 
   .search-box {
