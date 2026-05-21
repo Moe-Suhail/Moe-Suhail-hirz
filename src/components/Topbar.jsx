@@ -5,7 +5,7 @@ export default function Topbar({ label, title, query, searchPlaceholder, onQuery
   return (
     <header className="topbar">
       <div className="hero-brand">
-        <img src="./hirz-logo.png" alt="لوقو حرز" />
+        <img src="./hirz-logo.webp" alt="لوقو حرز" />
         <div>
           <strong>حِرْز</strong>
           <span>تصميم وتطوير محمد عادل حسن طه</span>
