@@ -42,7 +42,7 @@ export default function Sidebar({ views, activeView, progress, theme, onThemeTog
         <span>{theme === "dark" ? "الوضع النهاري" : "الوضع الليلي"}</span>
       </button>
 
-      <p className="copyright">جميع الحقوق محفوظة م. محمد عادل حسن طه</p>
+      <p className="copyright">جميع الحقوق محفوظة محمد عادل حسن طه</p>
 
       <div className="daily-card">
         <span>ورد اليوم</span>
