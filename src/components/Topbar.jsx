@@ -14,7 +14,7 @@ export default function Topbar({ label, title, query, searchPlaceholder, onQuery
         <div>
           <h2 className="hero-logo-word" aria-label="حِرز">حرز</h2>
           <p className="topbar-subtitle">أذكار وقران</p>
-          <p className="hero-dedication">صدقة جارية عني وعن جدتي وجدي وجميع أموات المسلمين</p>
+          <p className="hero-dedication">صدقة عني و عن امي و ابي و جميع المسلمين</p>
         </div>
       </div>
 
