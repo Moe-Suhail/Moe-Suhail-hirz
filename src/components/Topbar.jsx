@@ -1,22 +1,20 @@
 import React from "react";
-import { Moon, Search, Sun } from "lucide-react";
+import { BookOpen, Moon, Search, Sun } from "lucide-react";
 
 export default function Topbar({ label, title, query, searchPlaceholder, onQueryChange, theme, onThemeToggle }) {
   return (
     <header className="topbar">
-      <div className="hero-brand">
-        <img src="./hirz-logo.webp" alt="لوقو حرز" />
-        <div className="hero-brand-copy">
-          <strong>حِرْز</strong>
-          <span>أذكار وقرآن</span>
-          <small>تصميم وتطوير محمد عادل حسن طه</small>
-        </div>
+      <div className="hero-brand" aria-hidden="true">
+        <span className="hero-mark">
+          <BookOpen size={22} strokeWidth={1.8} />
+        </span>
       </div>
 
       <div className="title-block">
         <div>
-          <h2>{label}</h2>
-          <p className="topbar-subtitle">{title}</p>
+          <h2>حِرز</h2>
+          <p className="topbar-subtitle">أذكار وقرآن وصدقة جارية</p>
+          <p className="hero-dedication">صدقة جارية عني وعن جدتي وجدي وجميع أموات المسلمين</p>
         </div>
       </div>
 
