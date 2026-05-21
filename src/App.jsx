@@ -23,7 +23,33 @@ function readStorage(key, fallback) {
 }
 
 function normalize(value) {
-  return value.toLowerCase().replace(/[أإآ]/g, "ا").replace(/[ة]/g, "ه");
+  return value
+    .toLowerCase()
+    .replace(/[ًٌٍَُِّْٰـ]/g, "")
+    .replace(/[أإآٱ]/g, "ا")
+    .replace(/[ؤ]/g, "و")
+    .replace(/[ئ]/g, "ي")
+    .replace(/[ى]/g, "ي")
+    .replace(/[ة]/g, "ه")
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function searchTokens(value) {
+  return normalize(value)
+    .split(" ")
+    .filter((token) => token.length > 1)
+    .map((token) => token.replace(/^(ال|وال|بال|كال|فال|لل)/, "").replace(/(ه|ها|هم|كم|نا|ي)$/u, ""));
+}
+
+function semanticMatch(haystack, query) {
+  const tokens = searchTokens(query);
+  if (!tokens.length) {
+    return true;
+  }
+  const normalizedHaystack = normalize(haystack);
+  return tokens.every((token) => normalizedHaystack.includes(token));
 }
 
 export default function App() {
@@ -138,18 +164,16 @@ export default function App() {
   const progress = dhikrItems.length ? Math.round((completedCount / dhikrItems.length) * 100) : 0;
 
   const filteredDhikr = useMemo(() => {
-    const cleanQuery = normalize(query);
     return dhikrItems.filter((item) => {
       const matchesCategory = item.collectionId === category;
-      const matchesQuery = !cleanQuery || normalize(`${item.category} ${item.text} ${item.note}`).includes(cleanQuery);
+      const matchesQuery = semanticMatch(`${item.category} ${item.text} ${item.note}`, query);
       return matchesCategory && matchesQuery;
     });
   }, [category, dhikrItems, query]);
 
   const filteredSurahs = useMemo(() => {
-    const cleanQuery = normalize(query);
     return quranChapters.filter((surah) => {
-      return !cleanQuery || normalize(`${surah.name} ${surah.meta} ${surah.number}`).includes(cleanQuery);
+      return semanticMatch(`${surah.name} ${surah.meta} ${surah.number}`, query);
     });
   }, [quranChapters, query]);
 
@@ -238,13 +262,6 @@ export default function App() {
         />
 
         <section className="header-info-panel" aria-label="معلومات حرز">
-          <div className="header-info-progress">
-            <span>ورد اليوم</span>
-            <strong>{progress}%</strong>
-            <div className="progress-track" aria-hidden="true">
-              <div style={{ width: `${progress}%` }} />
-            </div>
-          </div>
           <div className="header-info-dedication">
             <span>صدقة جارية</span>
             <p>لروح جدي و جدتي</p>
@@ -252,7 +269,13 @@ export default function App() {
             <strong>ست النور محمد عثمان</strong>
             <p>ولجميع أمواتنا وأموات المسلمين</p>
           </div>
-          <p className="header-info-copyright">جميع الحقوق محفوظة محمد عادل حسن طه</p>
+          <div className="header-info-progress">
+            <span>ورد اليوم</span>
+            <strong>{progress}%</strong>
+            <div className="progress-track" aria-hidden="true">
+              <div style={{ width: `${progress}%` }} />
+            </div>
+          </div>
         </section>
 
         {activeView === "adhkar" && (
@@ -431,7 +454,7 @@ export default function App() {
             <p>ولجميع أمواتنا وأموات المسلمين</p>
           </div>
 
-          <p className="smart-footer-copyright">جميع الحقوق محفوظة محمد عادل حسن طه</p>
+          <p className="smart-footer-copyright">تصميم وتطوير محمد عادل حسن طه</p>
         </footer>
       </main>
     </div>
