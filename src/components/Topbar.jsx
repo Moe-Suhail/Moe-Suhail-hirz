@@ -13,7 +13,7 @@ export default function Topbar({ label, title, query, searchPlaceholder, onQuery
       <div className="title-block">
         <div>
           <h2>حِرز</h2>
-          <p className="topbar-subtitle">أذكار وقرآن وصدقة جارية</p>
+          <p className="topbar-subtitle">أذكار وقران</p>
           <p className="hero-dedication">صدقة جارية عني وعن جدتي وجدي وجميع أموات المسلمين</p>
         </div>
       </div>
