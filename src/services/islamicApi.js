@@ -173,12 +173,16 @@ export async function fetchAllDhikr() {
     if (result.status !== "fulfilled") {
       return { ...collection, count: 0, items: [] };
     }
-    const items = (result.value.data?.duas || []).map((dua) => ({
-      ...normalizeDua(dua),
-      category: collection.label,
-      collectionId: collection.id,
-      collectionLabel: collection.label
-    })).map((item) => (collection.id === "evening" ? applyEveningWording(item) : item));
+    const items = (result.value.data?.duas || []).map((dua) => {
+      const normalized = normalizeDua(dua);
+      return {
+        ...normalized,
+        id: `${collection.id}-${normalized.id}`,
+        category: collection.label,
+        collectionId: collection.id,
+        collectionLabel: collection.label
+      };
+    }).map((item) => (collection.id === "evening" ? applyEveningWording(item) : item));
     return { ...collection, count: items.length, items };
   });
 
