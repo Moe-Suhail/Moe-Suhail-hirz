@@ -4,6 +4,14 @@ import { Moon, Search, Sun } from "lucide-react";
 export default function Topbar({ label, title, query, searchPlaceholder, onQueryChange, theme, onThemeToggle }) {
   return (
     <header className="topbar">
+      <div className="hero-brand">
+        <img src="./hirz-logo.png" alt="لوقو حرز" />
+        <div>
+          <strong>حِرْز</strong>
+          <span>تصميم وتطوير محمد عادل حسن طه</span>
+        </div>
+      </div>
+
       <div className="title-block">
         <div>
           <h2>{label}</h2>
