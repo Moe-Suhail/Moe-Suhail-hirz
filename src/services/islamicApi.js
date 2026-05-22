@@ -83,6 +83,14 @@ const repeatWords = [
   ["سبعا", 7],
   ["سبع", 7],
   ["سبعاً", 7],
+  ["اربعه", 4],
+  ["اربعة", 4],
+  ["أربعه", 4],
+  ["أربعة", 4],
+  ["أربع", 4],
+  ["اربع", 4],
+  ["أربع مرات", 4],
+  ["اربع مرات", 4],
   ["عشر", 10],
   ["عشرا", 10],
   ["عشراً", 10],
@@ -122,18 +130,28 @@ function detectRepeat(text) {
   return match ? match[1] : 1;
 }
 
-function normalizeDua(dua) {
+function makeDuaKey(value, fallback) {
+  return String(value ?? fallback)
+    .trim()
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, "-")
+    .replace(/^-+|-+$/g, "") || String(fallback);
+}
+
+function normalizeDua(dua, index = 0) {
   const categoryNumber = Number(dua.category?.number || 0);
-  const duaNumber = Number(dua.number || 0);
+  const duaKey = makeDuaKey(dua.number, index + 1);
+  const duaNumber = Number.parseInt(String(dua.number || index + 1), 10) || index + 1;
   const body = stripHtml(dua.ar?.body || dua.en?.body || "");
   const text = stripHtml(dua.ar?.text || body || "");
   const note = body && body !== text ? body : "";
 
   return {
-    id: `dhikr-${categoryNumber}-${duaNumber}`,
+    id: `dhikr-${categoryNumber}-${duaKey}`,
     category: dua.category?.ar || "أذكار",
     categoryNumber,
     duaNumber,
+    order: index + 1,
     text,
     note,
     target: detectRepeat(`${text} ${body}`)
@@ -173,11 +191,12 @@ export async function fetchAllDhikr() {
     if (result.status !== "fulfilled") {
       return { ...collection, count: 0, items: [] };
     }
-    const items = (result.value.data?.duas || []).map((dua) => {
-      const normalized = normalizeDua(dua);
+    const items = (result.value.data?.duas || []).map((dua, duaIndex) => {
+      const normalized = normalizeDua(dua, duaIndex);
       return {
         ...normalized,
         id: `${collection.id}-${normalized.id}`,
+        collectionOrder: index + 1,
         category: collection.label,
         collectionId: collection.id,
         collectionLabel: collection.label
@@ -196,7 +215,7 @@ export async function fetchAllDhikr() {
     categories: collections.map(({ items, ...collection }) => collection),
     items: collections
       .flatMap((collection) => collection.items)
-      .sort((a, b) => a.categoryNumber - b.categoryNumber || a.duaNumber - b.duaNumber)
+      .sort((a, b) => (a.collectionOrder || 99) - (b.collectionOrder || 99) || a.order - b.order || a.duaNumber - b.duaNumber)
   };
 }
 

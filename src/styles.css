@@ -765,6 +765,26 @@ svg {
   color: var(--ink);
 }
 
+.search-submit {
+  display: inline-grid;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  padding: 0;
+}
+
+.search-submit:hover,
+.search-submit:focus-visible {
+  background: rgba(106, 169, 150, 0.14);
+  color: var(--accent-deep);
+  outline: none;
+}
+
 .view-stack {
   display: grid;
   gap: 14px;
@@ -886,27 +906,74 @@ svg {
 
 .dhikr-stack {
   display: grid;
-  gap: 14px;
+  gap: 12px;
   width: min(940px, 100%);
   max-width: 940px;
+}
+
+.dhikr-reader {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  touch-action: pan-y;
+}
+
+.dhikr-reader-meta,
+.dhikr-reader-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dhikr-reader-meta {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 800;
+  padding: 0 4px;
+}
+
+.dhikr-reader-dots {
+  display: flex;
+  direction: rtl;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.dhikr-reader-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(106, 169, 150, 0.28);
+}
+
+.dhikr-reader-dots span.active {
+  width: 22px;
+  background: var(--accent-deep);
+}
+
+.dhikr-reader-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 .selected-collection-title {
   display: flex;
   justify-content: center;
+  width: 100%;
 }
 
 .selected-collection-title h3 {
   margin: 0;
-  width: min(360px, 100%);
+  width: 100%;
   border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--panel);
+  border-radius: 12px;
+  background: var(--warm-glass);
   color: var(--accent-deep);
-  padding: 10px 18px;
+  padding: 11px 18px;
   text-align: center;
   font-size: 24px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 12px 28px rgba(40, 85, 75, 0.07);
   backdrop-filter: var(--glass);
 }
 
@@ -961,6 +1028,7 @@ svg {
 
 .dhikr-card {
   background: var(--warm-glass, linear-gradient(135deg, rgba(255, 255, 255, 0.68), rgba(255, 249, 230, 0.74)), rgba(255, 250, 235, 0.72));
+  width: 100%;
 }
 
 .card-head,

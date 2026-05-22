@@ -1,0 +1,15 @@
+node_modules/
+dist/
+
+# Local screenshots and verification artifacts
+/hirz-*.png
+/mobile-*.png
+
+# Android local/build outputs
+android/.gradle/
+android/**/build/
+android/local.properties
+*.apk
+*.aab
+*.jks
+*.keystore

@@ -1,7 +1,12 @@
 import React from "react";
 import { BookOpen, Moon, Search, Sun } from "lucide-react";
 
-export default function Topbar({ label, title, query, searchPlaceholder, onQueryChange, theme, onThemeToggle }) {
+export default function Topbar({ label, title, query, searchPlaceholder, onQueryChange, onSearch, theme, onThemeToggle }) {
+  function handleSearchSubmit(event) {
+    event.preventDefault();
+    onSearch();
+  }
+
   return (
     <header className="topbar">
       <div className="hero-brand" aria-hidden="true">
@@ -32,15 +37,17 @@ export default function Topbar({ label, title, query, searchPlaceholder, onQuery
           </span>
         </button>
 
-        <label className="search-box">
-          <Search size={18} aria-hidden="true" />
+        <form className="search-box" role="search" onSubmit={handleSearchSubmit}>
           <input
             type="search"
             placeholder={searchPlaceholder}
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
           />
-        </label>
+          <button className="search-submit" type="submit" aria-label="بحث">
+            <Search size={18} aria-hidden="true" />
+          </button>
+        </form>
       </div>
     </header>
   );

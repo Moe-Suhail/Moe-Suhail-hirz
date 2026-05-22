@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { BookOpen, Heart, RotateCcw, Sparkles, Star, Sun } from "lucide-react";
 import DhikrCard from "./components/DhikrCard.jsx";
 import EmptyState from "./components/EmptyState.jsx";
@@ -20,6 +20,24 @@ function readStorage(key, fallback) {
   } catch {
     return fallback;
   }
+}
+
+function todayKey() {
+  const date = new Date();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+function readDailyCounts() {
+  const dailyCounts = readStorage("hirz-counts-daily", null);
+  if (dailyCounts?.date === todayKey() && dailyCounts.counts && typeof dailyCounts.counts === "object") {
+    return dailyCounts.counts;
+  }
+  if (dailyCounts) {
+    return {};
+  }
+  return readStorage("hirz-counts", {});
 }
 
 function normalize(value) {
@@ -86,10 +104,13 @@ export default function App() {
   const [pageVerses, setPageVerses] = useState([]);
   const [loading, setLoading] = useState({ dhikr: true, quran: true });
   const [errors, setErrors] = useState({ dhikr: "", quran: "" });
-  const [counts, setCounts] = useState(() => readStorage("hirz-counts", {}));
+  const [counts, setCounts] = useState(() => readDailyCounts());
   const [favorites, setFavorites] = useState(() => readStorage("hirz-favorites", []));
   const [tasbeeh, setTasbeeh] = useState(0);
   const [theme, setTheme] = useState(() => localStorage.getItem("hirz-theme") || "light");
+  const [activeDhikrIndex, setActiveDhikrIndex] = useState(0);
+  const touchStartX = useRef(null);
+  const quranPageCache = useRef(new Map());
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -137,6 +158,16 @@ export default function App() {
 
   useEffect(() => {
     let isMounted = true;
+
+    if (quranPageCache.current.has(quranPage)) {
+      setPageVerses(quranPageCache.current.get(quranPage));
+      setLoading((current) => ({ ...current, quran: false }));
+      setErrors((current) => ({ ...current, quran: "" }));
+      return () => {
+        isMounted = false;
+      };
+    }
+
     setLoading((current) => ({ ...current, quran: true }));
     setErrors((current) => ({ ...current, quran: "" }));
 
@@ -145,6 +176,7 @@ export default function App() {
         if (!isMounted) {
           return;
         }
+        quranPageCache.current.set(quranPage, verses);
         setPageVerses(verses);
         setLoading((current) => ({ ...current, quran: false }));
       })
@@ -162,33 +194,51 @@ export default function App() {
   }, [quranPage]);
 
   useEffect(() => {
-    const firstVerse = pageVerses[0];
-    if (!firstVerse?.surahNumber) {
+    const selected = quranChapters.find((surah) => surah.id === selectedSurah);
+    if (selected && quranPage >= selected.pageStart && quranPage <= selected.pageEnd) {
       return;
     }
-    const currentPageSurah = quranChapters.find((surah) => surah.number === firstVerse.surahNumber);
-    if (currentPageSurah && currentPageSurah.id !== selectedSurah) {
-      setSelectedSurah(currentPageSurah.id);
+
+    const pageSurah =
+      quranChapters.find((surah) => quranPage >= surah.pageStart && quranPage <= surah.pageEnd) ||
+      quranChapters.find((surah) => surah.number === pageVerses[0]?.surahNumber);
+
+    if (pageSurah && pageSurah.id !== selectedSurah) {
+      setSelectedSurah(pageSurah.id);
     }
-  }, [pageVerses, quranChapters, selectedSurah]);
+  }, [pageVerses, quranChapters, quranPage, selectedSurah]);
 
   const activeSurah = quranChapters.find((surah) => surah.id === selectedSurah) ?? quranChapters[0];
   const completedCount = dhikrItems.filter((item) => (counts[item.id] || 0) >= item.target).length;
   const progress = dhikrItems.length ? Math.round((completedCount / dhikrItems.length) * 100) : 0;
+  const hasSearchQuery = searchTokens(query).length > 0;
 
   const filteredDhikr = useMemo(() => {
     return dhikrItems.filter((item) => {
-      const matchesCategory = item.collectionId === category;
-      const matchesQuery = semanticMatch(`${item.category} ${item.text} ${item.note}`, query);
+      const matchesCategory = hasSearchQuery || item.collectionId === category;
+      const collection = dhikrCategories.find((entry) => entry.id === item.collectionId);
+      const matchesQuery = semanticMatch(`${collection?.label || ""} ${collection?.description || ""} ${item.category} ${item.text} ${item.note}`, query);
       return matchesCategory && matchesQuery;
     });
-  }, [category, dhikrItems, query]);
+  }, [category, dhikrCategories, dhikrItems, hasSearchQuery, query]);
 
   const filteredSurahs = useMemo(() => {
     return quranChapters.filter((surah) => {
       return semanticMatch(`${surah.name} ${surah.meta} ${surah.number}`, query);
     });
   }, [quranChapters, query]);
+
+  const activeDhikrItem = filteredDhikr[activeDhikrIndex] || filteredDhikr[0];
+
+  useEffect(() => {
+    setActiveDhikrIndex(0);
+  }, [category, query]);
+
+  useEffect(() => {
+    if (activeDhikrIndex >= filteredDhikr.length) {
+      setActiveDhikrIndex(Math.max(0, filteredDhikr.length - 1));
+    }
+  }, [activeDhikrIndex, filteredDhikr.length]);
 
   const favoriteItems = useMemo(() => {
     const allItems = [
@@ -199,6 +249,9 @@ export default function App() {
   }, [dhikrItems, favorites, quranChapters]);
 
   useEffect(() => {
+    if (!dhikrItems.length) {
+      return;
+    }
     const validIds = new Set([...dhikrItems.map((item) => item.id), ...quranChapters.map((item) => item.id)]);
     if (!validIds.size) {
       return;
@@ -223,6 +276,7 @@ export default function App() {
 
   function saveCounts(nextCounts) {
     setCounts(nextCounts);
+    localStorage.setItem("hirz-counts-daily", JSON.stringify({ date: todayKey(), counts: nextCounts }));
     localStorage.setItem("hirz-counts", JSON.stringify(nextCounts));
   }
 
@@ -236,10 +290,15 @@ export default function App() {
   }
 
   function incrementDhikr(item) {
+    const currentCount = counts[item.id] || 0;
+    const nextCount = Math.min(currentCount + 1, item.target);
     saveCounts({
       ...counts,
-      [item.id]: Math.min((counts[item.id] || 0) + 1, item.target)
+      [item.id]: nextCount
     });
+    if (currentCount < item.target && nextCount >= item.target) {
+      window.setTimeout(() => goToNextDhikr(), 260);
+    }
   }
 
   function resetDhikr(id) {
@@ -250,6 +309,44 @@ export default function App() {
 
   function updateTasbeeh(nextValue) {
     setTasbeeh(nextValue);
+  }
+
+  function submitSearch() {
+    if (query.trim()) {
+      setActiveView((current) => current);
+      window.requestAnimationFrame(() => {
+        document.querySelector(".view-stack, .reader-layout, .cards-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }
+
+  function goToNextDhikr() {
+    setActiveDhikrIndex((current) => (filteredDhikr.length ? Math.min(current + 1, filteredDhikr.length - 1) : 0));
+  }
+
+  function goToPreviousDhikr() {
+    setActiveDhikrIndex((current) => Math.max(current - 1, 0));
+  }
+
+  function handleDhikrTouchStart(event) {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+  }
+
+  function handleDhikrTouchEnd(event) {
+    if (touchStartX.current === null) {
+      return;
+    }
+    const endX = event.changedTouches[0]?.clientX ?? touchStartX.current;
+    const delta = endX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(delta) < 46) {
+      return;
+    }
+    if (delta > 0) {
+      goToPreviousDhikr();
+    } else {
+      goToNextDhikr();
+    }
   }
 
   return (
@@ -270,6 +367,7 @@ export default function App() {
           query={query}
           searchPlaceholder={activeView === "quran" ? "ابحث باسم السورة أو الآية" : "ابحث في حرز"}
           onQueryChange={setQuery}
+          onSearch={submitSearch}
           theme={theme}
           onThemeToggle={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
         />
@@ -314,24 +412,40 @@ export default function App() {
             )}
             <div className="dhikr-stack">
               <div className="selected-collection-title">
-                <h3>{dhikrCategories.find((item) => item.id === category)?.label || "أذكار الصباح"}</h3>
+                <h3>{hasSearchQuery ? "نتائج البحث" : dhikrCategories.find((item) => item.id === category)?.label || "أذكار الصباح"}</h3>
               </div>
               {loading.dhikr ? (
                 <EmptyState text="جاري تحميل جميع الأذكار من المصدر..." />
               ) : errors.dhikr ? (
                 <EmptyState text={errors.dhikr} />
               ) : filteredDhikr.length ? (
-                filteredDhikr.map((item) => (
+                <div className="dhikr-reader" onTouchStart={handleDhikrTouchStart} onTouchEnd={handleDhikrTouchEnd}>
+                  <div className="dhikr-reader-meta">
+                    <span>{activeDhikrIndex + 1} من {filteredDhikr.length}</span>
+                    <div className="dhikr-reader-dots" aria-hidden="true">
+                      {filteredDhikr.slice(0, Math.min(filteredDhikr.length, 12)).map((item, index) => (
+                        <span className={index === Math.min(activeDhikrIndex, 11) ? "active" : ""} key={item.id} />
+                      ))}
+                    </div>
+                  </div>
                   <DhikrCard
-                    key={item.id}
-                    item={item}
-                    count={counts[item.id] || 0}
-                    isFavorite={favorites.includes(item.id)}
-                    onFavorite={() => toggleFavorite(item.id)}
-                    onIncrement={() => incrementDhikr(item)}
-                    onReset={() => resetDhikr(item.id)}
+                    key={activeDhikrItem.id}
+                    item={activeDhikrItem}
+                    count={counts[activeDhikrItem.id] || 0}
+                    isFavorite={favorites.includes(activeDhikrItem.id)}
+                    onFavorite={() => toggleFavorite(activeDhikrItem.id)}
+                    onIncrement={() => incrementDhikr(activeDhikrItem)}
+                    onReset={() => resetDhikr(activeDhikrItem.id)}
                   />
-                ))
+                  <div className="dhikr-reader-controls">
+                    <button className="ghost-btn" type="button" onClick={goToPreviousDhikr} disabled={activeDhikrIndex <= 0}>
+                      السابق
+                    </button>
+                    <button className="ghost-btn" type="button" onClick={goToNextDhikr} disabled={activeDhikrIndex >= filteredDhikr.length - 1}>
+                      التالي
+                    </button>
+                  </div>
+                </div>
               ) : (
                 <EmptyState text="لا توجد أذكار مطابقة للبحث الحالي في هذا القسم." />
               )}
