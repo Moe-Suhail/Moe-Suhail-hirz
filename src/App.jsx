@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { App as CapacitorApp } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
 import { BookOpen, Bookmark, Hash, Heart, House, Layers, List, RotateCcw, Search, Sparkles, Star, Sun, Undo2, X } from "lucide-react";
 import DhikrCard from "./components/DhikrCard.jsx";
 import EmptyState from "./components/EmptyState.jsx";
@@ -181,6 +183,34 @@ export default function App() {
   const quranPageCache = useRef(new Map());
   const collectionRefs = useRef(new Map());
   const dhikrMotionTimeout = useRef(null);
+  const activeViewRef = useRef(activeView);
+  const categoryRef = useRef(category);
+  const quranPageRef = useRef(quranPage);
+  const activeDhikrIndexRef = useRef(activeDhikrIndex);
+  const quranIndexOpenRef = useRef(quranIndexOpen);
+  const appHistoryRef = useRef([]);
+
+  useEffect(() => {
+    activeViewRef.current = activeView;
+    categoryRef.current = category;
+    quranPageRef.current = quranPage;
+    activeDhikrIndexRef.current = activeDhikrIndex;
+    quranIndexOpenRef.current = quranIndexOpen;
+  }, [activeDhikrIndex, activeView, category, quranIndexOpen, quranPage]);
+
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) {
+      return;
+    }
+
+    const backHandler = CapacitorApp.addListener("backButton", () => {
+      handleAppBack();
+    });
+
+    return () => {
+      backHandler.then((handler) => handler.remove());
+    };
+  }, []);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -488,10 +518,79 @@ export default function App() {
     dhikrMotionTimeout.current = window.setTimeout(() => setDhikrMotion("idle"), 240);
   }
 
+  function captureNavigationState() {
+    return {
+      view: activeViewRef.current,
+      category: categoryRef.current,
+      quranPage: quranPageRef.current,
+      dhikrIndex: activeDhikrIndexRef.current
+    };
+  }
+
+  function rememberNavigationStep() {
+    const snapshot = captureNavigationState();
+    const stack = appHistoryRef.current;
+    const last = stack[stack.length - 1];
+    if (
+      last &&
+      last.view === snapshot.view &&
+      last.category === snapshot.category &&
+      last.quranPage === snapshot.quranPage &&
+      last.dhikrIndex === snapshot.dhikrIndex
+    ) {
+      return;
+    }
+    stack.push(snapshot);
+    if (stack.length > 24) {
+      stack.shift();
+    }
+  }
+
+  function restoreNavigationStep(snapshot) {
+    setActiveView(snapshot.view);
+    setCategory(snapshot.category || "morning");
+    setQuranPage(snapshot.quranPage || 1);
+    setActiveDhikrIndex(snapshot.dhikrIndex || 0);
+    setQuranIndexOpen(false);
+    window.requestAnimationFrame(() => {
+      if (snapshot.view === "home") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (snapshot.view === "adhkar") {
+        document.querySelector(".dhikr-stack")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (snapshot.view === "quran") {
+        document.querySelector(".mushaf-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  }
+
+  function handleAppBack() {
+    if (quranIndexOpenRef.current) {
+      setQuranIndexOpen(false);
+      return;
+    }
+
+    const previous = appHistoryRef.current.pop();
+    if (previous) {
+      restoreNavigationStep(previous);
+      return;
+    }
+
+    if (activeViewRef.current !== "home") {
+      setActiveView("home");
+      window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
+      return;
+    }
+
+    if (window.confirm("هل تريد الخروج من تطبيق حرز؟")) {
+      CapacitorApp.exitApp();
+    }
+  }
+
   function selectDhikrCategory(nextCategory) {
     if (!nextCategory || nextCategory === category) {
       return;
     }
+    rememberNavigationStep();
     triggerDhikrMotion("section");
     setCategory(nextCategory);
     setActiveView("adhkar");
@@ -517,6 +616,9 @@ export default function App() {
 
   function goToQuranPage(page) {
     const safePage = Math.min(604, Math.max(1, toWesternNumber(page, 1)));
+    if (safePage !== quranPageRef.current) {
+      rememberNavigationStep();
+    }
     setQuranPage(safePage);
     window.requestAnimationFrame(() => {
       document.querySelector(".mushaf-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -594,7 +696,12 @@ export default function App() {
 
   function submitSearch() {
     if (query.trim()) {
-      setActiveView((current) => current);
+      if (activeViewRef.current === "home") {
+        rememberNavigationStep();
+        setActiveView("adhkar");
+      } else {
+        setActiveView((current) => current);
+      }
       window.requestAnimationFrame(() => {
         document.querySelector(".view-stack, .reader-layout, .cards-grid")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
@@ -689,6 +796,9 @@ export default function App() {
   }
 
   function changeView(nextView) {
+    if (nextView !== activeViewRef.current) {
+      rememberNavigationStep();
+    }
     setActiveView(nextView);
     setQuranIndexOpen(false);
     if (nextView === "home") {
