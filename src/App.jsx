@@ -587,7 +587,17 @@ export default function App() {
   }
 
   function selectDhikrCategory(nextCategory) {
-    if (!nextCategory || nextCategory === category) {
+    if (!nextCategory) {
+      return;
+    }
+    if (nextCategory === category) {
+      if (activeViewRef.current !== "adhkar") {
+        rememberNavigationStep();
+        setActiveView("adhkar");
+        window.requestAnimationFrame(() => {
+          document.querySelector(".dhikr-stack")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      }
       return;
     }
     rememberNavigationStep();
