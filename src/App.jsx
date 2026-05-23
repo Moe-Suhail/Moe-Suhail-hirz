@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { BookOpen, Bookmark, Hash, Heart, Layers, List, RotateCcw, Search, Sparkles, Star, Sun, Undo2, X } from "lucide-react";
+import { BookOpen, Bookmark, Hash, Heart, House, Layers, List, RotateCcw, Search, Sparkles, Star, Sun, Undo2, X } from "lucide-react";
 import DhikrCard from "./components/DhikrCard.jsx";
 import EmptyState from "./components/EmptyState.jsx";
 import Sidebar from "./components/Sidebar.jsx";
@@ -8,6 +8,7 @@ import { surahMeta, tasbeehPhrases } from "./data";
 import { fetchAllDhikr, fetchQuranChapters, fetchQuranPage, fetchQuranVersePage } from "./services/islamicApi";
 
 const views = {
+  home: { label: "الرئيسية", title: "حِرز", icon: House },
   adhkar: { label: "الأذكار", title: "وردك اليومي بهدوء", icon: Sun },
   quran: { label: "القرآن", title: "اقرأ ما تيسر لك", icon: BookOpen },
   tasbeeh: { label: "السبحة", title: "ذكر مستمر وبسيط", icon: Sparkles },
@@ -142,7 +143,7 @@ function formatJuzName(juzNumber) {
 }
 
 export default function App() {
-  const [activeView, setActiveView] = useState("adhkar");
+  const [activeView, setActiveView] = useState("home");
   const [category, setCategory] = useState(() => localStorage.getItem("hirz-dhikr-category") || "morning");
   const [query, setQuery] = useState("");
   const [selectedSurah, setSelectedSurah] = useState("surah-1");
@@ -493,12 +494,14 @@ export default function App() {
     }
     triggerDhikrMotion("section");
     setCategory(nextCategory);
+    setActiveView("adhkar");
     window.requestAnimationFrame(() => {
       collectionRefs.current.get(nextCategory)?.scrollIntoView({
         behavior: "smooth",
         block: "nearest",
         inline: "center"
       });
+      document.querySelector(".dhikr-stack")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
 
@@ -685,6 +688,25 @@ export default function App() {
     }
   }
 
+  function changeView(nextView) {
+    setActiveView(nextView);
+    setQuranIndexOpen(false);
+    if (nextView === "home") {
+      setQuery("");
+      window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
+    } else if (nextView === "adhkar") {
+      window.requestAnimationFrame(() => {
+        document.querySelector(".dhikr-stack")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }
+
+  const isDhikrContentView = activeView === "adhkar" || activeView === "home";
+  const contentMode = [
+    activeView === "quran" ? "quran-focus" : "",
+    activeView === "adhkar" ? "dhikr-focus" : ""
+  ].filter(Boolean).join(" ");
+
   return (
     <div className="app-shell">
       <Sidebar
@@ -693,10 +715,10 @@ export default function App() {
         progress={progress}
         theme={theme}
         onThemeToggle={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
-        onViewChange={setActiveView}
+        onViewChange={changeView}
       />
 
-      <main className={`content ${activeView === "quran" ? "quran-focus" : ""}`}>
+      <main className={`content ${contentMode}`}>
         <Topbar
           label={views[activeView].label}
           title={views[activeView].title}
@@ -741,7 +763,7 @@ export default function App() {
           </div>
         </section>
 
-        {activeView === "adhkar" && (
+        {isDhikrContentView && (
           <section className="view-stack">
             {dhikrCategories.length > 0 && (
               <div className="collection-panel">
@@ -881,10 +903,6 @@ export default function App() {
                   <h3>{activeSurah.name}</h3>
                 </div>
                 <div className="reader-actions">
-                  <button className="index-btn" type="button" onClick={() => setQuranIndexOpen(true)}>
-                    <List size={18} aria-hidden="true" />
-                    الفهرس
-                  </button>
                   <button
                     className={`icon-btn ${favorites.includes(activeSurah.id) ? "active" : ""}`}
                     type="button"
@@ -1121,7 +1139,6 @@ export default function App() {
               </div>
               <div className="daily-progress-score">
                 <strong>{dailyCoreProgress}%</strong>
-                <small>نسبة الإنجاز</small>
               </div>
             </div>
             <div className="split-progress" aria-hidden="true">
