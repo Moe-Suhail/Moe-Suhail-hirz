@@ -87,6 +87,8 @@ function readDailyCounts() {
 function normalize(value) {
   return value
     .toLowerCase()
+    .replace(/[٠-٩]/g, (digit) => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
+    .replace(/[۰-۹]/g, (digit) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)))
     .replace(/[ًٌٍَُِّْٰـ]/g, "")
     .replace(/[أإآٱ]/g, "ا")
     .replace(/[ؤ]/g, "و")
@@ -96,6 +98,14 @@ function normalize(value) {
     .replace(/[^\p{L}\p{N}\s]/gu, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function toWesternNumber(value, fallback = 1) {
+  const normalized = String(value ?? "")
+    .replace(/[٠-٩]/g, (digit) => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
+    .replace(/[۰-۹]/g, (digit) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)))
+    .replace(/[^\d]/g, "");
+  return Number(normalized) || fallback;
 }
 
 function searchTokens(value) {
@@ -503,7 +513,7 @@ export default function App() {
   }
 
   function goToQuranPage(page) {
-    const safePage = Math.min(604, Math.max(1, Number(page) || 1));
+    const safePage = Math.min(604, Math.max(1, toWesternNumber(page, 1)));
     setQuranPage(safePage);
     window.requestAnimationFrame(() => {
       document.querySelector(".mushaf-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -532,7 +542,7 @@ export default function App() {
 
   function submitAyahJump(event) {
     event.preventDefault();
-    const ayah = Math.min(activeSurah.versesCount || 1, Math.max(1, Number(ayahJumpInput) || 1));
+    const ayah = Math.min(activeSurah.versesCount || 1, Math.max(1, toWesternNumber(ayahJumpInput, 1)));
     fetchQuranVersePage(activeSurah.number, ayah)
       .then((page) => {
         goToQuranPage(page);
@@ -686,7 +696,7 @@ export default function App() {
         onViewChange={setActiveView}
       />
 
-      <main className="content">
+      <main className={`content ${activeView === "quran" ? "quran-focus" : ""}`}>
         <Topbar
           label={views[activeView].label}
           title={views[activeView].title}
@@ -1106,8 +1116,13 @@ export default function App() {
         <footer className="smart-footer" aria-label="معلومات حرز">
           <div className="smart-footer-progress">
             <div className="daily-progress-head">
-              <span>ورد اليوم</span>
-              <strong>{dailyCoreProgress}%</strong>
+              <div className="daily-progress-title">
+                <span>ورد اليوم</span>
+              </div>
+              <div className="daily-progress-score">
+                <strong>{dailyCoreProgress}%</strong>
+                <small>نسبة الإنجاز</small>
+              </div>
             </div>
             <div className="split-progress" aria-hidden="true">
               <div className="split-progress-half morning">
