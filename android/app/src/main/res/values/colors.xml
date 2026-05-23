@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="splash_background">#F8F5EA</color>
+    <color name="brand_green">#174C3C</color>
+    <color name="brand_gold">#C7A75A</color>
+    <color name="colorPrimary">#174C3C</color>
+    <color name="colorPrimaryDark">#0E3028</color>
+    <color name="colorAccent">#C7A75A</color>
+</resources>

@@ -304,7 +304,7 @@ export async function fetchQuranChapters() {
 }
 
 export async function fetchQuranPage(pageNumber) {
-  const result = await getQuranJson(`/verses/by_page/${pageNumber}?words=false&fields=text_uthmani,page_number&per_page=50`);
+  const result = await getQuranJson(`/verses/by_page/${pageNumber}?words=false&fields=text_uthmani,page_number,juz_number&per_page=50`);
   const verses = result.verses || result.data?.verses || result.ayahs || result.data?.ayahs || [];
 
   return verses.map((verse) => {
@@ -317,7 +317,14 @@ export async function fetchQuranPage(pageNumber) {
       surahNumber,
       ayahNumber,
       pageNumber: Number(verse.page_number || verse.pageNumber || pageNumber),
+      juzNumber: Number(verse.juz_number || verse.juzNumber || 1),
       text: verse.text_uthmani || verse.text || verse.text_uthmani_simple || verse.verse_text || ""
     };
   }).filter((verse) => verse.key && verse.text);
+}
+
+export async function fetchQuranVersePage(surahNumber, ayahNumber) {
+  const result = await getQuranJson(`/verses/by_key/${surahNumber}:${ayahNumber}?fields=page_number,juz_number`);
+  const verse = result.verse || result.data?.verse || result.data || {};
+  return Number(verse.page_number || verse.pageNumber || 1);
 }

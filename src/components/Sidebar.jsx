@@ -5,7 +5,7 @@ export default function Sidebar({ views, activeView, progress, theme, onThemeTog
   return (
     <aside className="sidebar" aria-label="التنقل الرئيسي">
       <div className="brand">
-        <img className="brand-logo" src="./hirz-logo.webp" alt="لوقو حرز" />
+        <img className="brand-logo" src="./assets/branding/hirz-symbol.png" alt="لوقو حرز" />
         <div>
           <h1>حِرْز</h1>
           <p>أذكار وقرآن</p>

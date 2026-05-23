@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { BookOpen, Moon, Search, Sun } from "lucide-react";
 
 export default function Topbar({ label, title, query, searchPlaceholder, onQueryChange, onSearch, theme, onThemeToggle }) {
+  const [logoFailed, setLogoFailed] = useState(false);
+
   function handleSearchSubmit(event) {
     event.preventDefault();
     onSearch();
@@ -11,7 +13,11 @@ export default function Topbar({ label, title, query, searchPlaceholder, onQuery
     <header className="topbar">
       <div className="hero-brand" aria-hidden="true">
         <span className="hero-mark">
-          <BookOpen size={22} strokeWidth={1.8} />
+          {logoFailed ? (
+            <BookOpen className="hero-mark-fallback" size={24} strokeWidth={1.8} />
+          ) : (
+            <img src="./assets/branding/hirz-symbol.png" alt="" loading="eager" decoding="async" onError={() => setLogoFailed(true)} />
+          )}
         </span>
       </div>
 

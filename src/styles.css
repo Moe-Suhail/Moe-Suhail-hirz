@@ -14,6 +14,7 @@
   --rose: #a44758;
   --blue: #2d628f;
   --glass: blur(24px) saturate(165%);
+  --glass-rich: blur(34px) saturate(190%);
   --shadow: 0 18px 44px rgba(37, 54, 44, 0.1);
   --glass-card: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 251, 237, 0.36)), rgba(255, 255, 255, 0.42);
   --glass-border: rgba(255, 255, 255, 0.48);
@@ -37,6 +38,7 @@
   --glass-border: rgba(226, 244, 236, 0.18);
   --warm-glass: linear-gradient(180deg, rgba(226, 244, 236, 0.13), rgba(225, 189, 114, 0.08)), rgba(20, 32, 27, 0.48);
   --warm-glass-active: linear-gradient(145deg, rgba(83, 119, 104, 0.6), rgba(116, 98, 56, 0.34)), rgba(28, 48, 41, 0.62);
+  --glass-rich: blur(34px) saturate(185%);
 }
 
 * {
@@ -168,7 +170,7 @@ svg {
   padding: 4px;
   border: 1px solid rgba(255, 255, 255, 0.42);
   background: rgba(255, 255, 255, 0.18);
-  object-fit: cover;
+  object-fit: contain;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.35),
     0 12px 24px rgba(12, 34, 29, 0.18);
@@ -350,26 +352,28 @@ svg {
   overflow: hidden;
   display: grid;
   grid-template-areas: "mark title actions";
-  grid-template-columns: 90px minmax(0, 1fr) minmax(260px, 370px);
+  grid-template-columns: 92px minmax(0, 1fr) minmax(260px, 360px);
   align-items: center;
   gap: 24px;
   margin-bottom: 24px;
-  min-height: 236px;
-  border: 1px solid rgba(255, 255, 255, 0.58);
-  border-radius: 30px 30px 40px 40px;
+  min-height: 248px;
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: 34px 34px 44px 44px;
   background:
-    linear-gradient(118deg, transparent 0 24%, rgba(255, 255, 255, 0.24) 38%, transparent 52%),
-    radial-gradient(circle at 50% 37%, rgba(255, 255, 255, 0.82), transparent 27%),
-    radial-gradient(circle at 60% 30%, rgba(111, 148, 132, 0.27), transparent 38%),
-    radial-gradient(circle at 16% 12%, rgba(214, 183, 106, 0.22), transparent 24%),
-    linear-gradient(135deg, rgba(255, 252, 242, 0.9) 0%, rgba(247, 241, 224, 0.9) 48%, rgba(218, 226, 207, 0.84) 100%);
+    linear-gradient(118deg, transparent 0 22%, rgba(255, 255, 255, 0.34) 39%, transparent 55%),
+    radial-gradient(circle at 52% 34%, rgba(255, 255, 255, 0.92), transparent 28%),
+    radial-gradient(circle at 58% 28%, rgba(111, 148, 132, 0.34), transparent 40%),
+    radial-gradient(circle at 16% 12%, rgba(214, 183, 106, 0.27), transparent 26%),
+    radial-gradient(circle at 88% 76%, rgba(23, 76, 60, 0.12), transparent 32%),
+    linear-gradient(135deg, rgba(255, 253, 246, 0.88) 0%, rgba(248, 241, 221, 0.88) 48%, rgba(216, 226, 207, 0.82) 100%);
   padding: 32px 34px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
     inset 0 -1px 0 rgba(199, 167, 90, 0.12),
-    0 28px 68px rgba(39, 58, 47, 0.14),
-    0 8px 24px rgba(198, 161, 91, 0.08);
-  backdrop-filter: var(--glass);
+    0 32px 78px rgba(39, 58, 47, 0.16),
+    0 10px 28px rgba(198, 161, 91, 0.1);
+  backdrop-filter: var(--glass-rich);
   isolation: isolate;
   animation: heroIn 520ms ease both;
 }
@@ -380,11 +384,12 @@ svg {
   inset: 0;
   z-index: 0;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.04) 42%, transparent),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.05) 42%, transparent),
+    repeating-conic-gradient(from 45deg at 50% 50%, rgba(23, 76, 60, 0.035) 0 10deg, transparent 10deg 20deg),
     radial-gradient(circle at 14% 18%, rgba(23, 76, 60, 0.09) 1px, transparent 1.4px),
     radial-gradient(circle at 86% 22%, rgba(199, 167, 90, 0.07) 1px, transparent 1.5px);
-  background-size: 30px 30px, 38px 38px;
-  opacity: 0.26;
+  background-size: auto, 46px 46px, 30px 30px, 38px 38px;
+  opacity: 0.22;
   pointer-events: none;
 }
 
@@ -399,10 +404,10 @@ svg {
   inset-inline: 8%;
   bottom: 0;
   z-index: 0;
-  height: 2px;
+  height: 3px;
   pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(184, 155, 94, 0.74), rgba(31, 77, 67, 0.3), transparent);
-  box-shadow: 0 -12px 36px rgba(198, 161, 91, 0.2);
+  background: linear-gradient(90deg, transparent, rgba(184, 155, 94, 0.82), rgba(31, 77, 67, 0.36), transparent);
+  box-shadow: 0 -14px 42px rgba(198, 161, 91, 0.28);
 }
 
 .hero-brand {
@@ -416,19 +421,31 @@ svg {
 
 .hero-mark {
   display: inline-grid;
-  width: 68px;
-  height: 68px;
+  width: 74px;
+  height: 74px;
   place-items: center;
   border: 1px solid rgba(199, 167, 90, 0.36);
   border-radius: 999px;
   background:
-    radial-gradient(circle at 36% 24%, rgba(255, 255, 255, 0.88), transparent 34%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.62), rgba(247, 238, 209, 0.42));
+    radial-gradient(circle at 36% 24%, rgba(255, 255, 255, 0.96), transparent 34%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(247, 238, 209, 0.46));
   color: #b9974e;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.86),
-    0 16px 34px rgba(23, 76, 60, 0.12),
-    0 0 0 8px rgba(255, 255, 255, 0.16);
+    0 18px 38px rgba(23, 76, 60, 0.14),
+    0 0 0 9px rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.hero-mark img {
+  width: 82%;
+  height: 82%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(23, 76, 60, 0.16));
+}
+
+.hero-mark-fallback {
+  color: #b9974e;
 }
 
 :root[data-theme="dark"] .hero-brand {
@@ -457,13 +474,13 @@ svg {
   min-height: 44px;
   border: 1px solid rgba(184, 155, 94, 0.26);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.62);
   color: rgba(31, 77, 67, 0.72);
   padding: 5px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.7),
     0 10px 24px rgba(31, 77, 67, 0.07);
-  backdrop-filter: var(--glass);
+  backdrop-filter: var(--glass-rich);
 }
 
 .header-theme-toggle span {
@@ -507,8 +524,9 @@ svg {
   line-height: 1;
   letter-spacing: 0;
   text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.76),
-    0 18px 38px rgba(23, 76, 60, 0.16);
+    0 1px 0 rgba(255, 255, 255, 0.86),
+    0 14px 32px rgba(23, 76, 60, 0.18),
+    0 0 24px rgba(199, 167, 90, 0.12);
   overflow-wrap: anywhere;
 }
 
@@ -574,8 +592,9 @@ svg {
   border: 1px solid rgba(255, 255, 255, 0.62);
   border-radius: 999px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.32)),
-    rgba(255, 255, 255, 0.46);
+    linear-gradient(118deg, transparent 0 20%, rgba(255, 255, 255, 0.38) 42%, transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(255, 255, 255, 0.36)),
+    rgba(255, 255, 255, 0.5);
   color: rgba(36, 86, 75, 0.82);
   padding: 8px 17px;
   font-family: "IBM Plex Sans Arabic", "Tajawal", Calibri, "Segoe UI", sans-serif;
@@ -585,7 +604,7 @@ svg {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.72),
     0 12px 28px rgba(31, 77, 67, 0.06);
-  backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: var(--glass-rich);
 }
 
 .hero-credit {
@@ -605,12 +624,12 @@ svg {
   min-height: 48px;
   border: 1px solid rgba(184, 155, 94, 0.24);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.62);
   padding: 0 14px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.72),
     0 10px 24px rgba(31, 77, 67, 0.07);
-  backdrop-filter: var(--glass);
+  backdrop-filter: var(--glass-rich);
 }
 
 .search-box:focus-within {
@@ -623,28 +642,27 @@ svg {
 
 .header-info-panel {
   display: block;
-  width: min(940px, 100%);
-  margin: -6px auto 20px;
+  width: min(820px, 100%);
+  margin: -8px auto 18px;
 }
 
 .header-info-card {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 126px;
+  grid-template-columns: minmax(0, 1fr) 112px;
   align-items: stretch;
-  gap: 12px;
+  gap: 10px;
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: 13px;
   background: var(--warm-glass);
   box-shadow: var(--shadow);
-  backdrop-filter: var(--glass);
-  padding: 12px;
+  backdrop-filter: var(--glass-rich);
+  padding: 10px;
 }
 
 :root:not([data-theme="dark"]) .header-info-card,
 :root:not([data-theme="dark"]) .smart-footer-dedication,
 :root:not([data-theme="dark"]) .smart-footer-progress,
-:root:not([data-theme="dark"]) .smart-footer-theme,
-:root:not([data-theme="dark"]) .smart-footer-copyright {
+:root:not([data-theme="dark"]) .smart-footer-theme {
   border-color: rgba(255, 255, 255, 0.66);
   background:
     linear-gradient(118deg, transparent 0 24%, rgba(255, 255, 255, 0.28) 39%, transparent 54%),
@@ -660,22 +678,22 @@ svg {
   display: grid;
   align-content: center;
   gap: 6px;
-  min-height: 96px;
+  min-height: 78px;
   border: 1px solid rgba(184, 155, 94, 0.18);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.34);
-  padding: 10px 11px;
+  padding: 8px 9px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.54);
 }
 
 .header-info-progress span {
   color: var(--muted);
-  font-size: 14px;
+  font-size: 12.5px;
 }
 
 .header-info-progress strong {
   color: var(--accent-deep);
-  font-size: 22px;
+  font-size: 20px;
   line-height: 1;
 }
 
@@ -683,10 +701,10 @@ svg {
   display: grid;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 96px;
+  gap: 5px;
+  min-height: 78px;
   border-radius: 10px;
-  padding: 12px 18px;
+  padding: 8px 14px;
   text-align: center;
 }
 
@@ -697,7 +715,7 @@ svg {
 }
 
 .header-info-dedication span {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.45;
 }
 
@@ -716,20 +734,20 @@ svg {
 .header-info-dedication strong,
 .smart-footer-dedication strong {
   color: var(--ink);
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.35;
 }
 
 .header-info-dedication p,
 .smart-footer-dedication p {
   line-height: 1.45;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .memorial-names {
   display: grid;
-  gap: 3px;
-  padding-top: 8px;
+  gap: 2px;
+  padding-top: 6px;
   border-top: 1px solid rgba(199, 167, 90, 0.2);
 }
 
@@ -740,16 +758,29 @@ svg {
 
 :root[data-theme="dark"] .topbar {
   background:
-    linear-gradient(118deg, transparent 0 25%, rgba(255, 255, 255, 0.1) 40%, transparent 55%),
-    radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.08), transparent 30%),
-    radial-gradient(circle at 84% 20%, rgba(225, 189, 114, 0.16), transparent 28%),
-    linear-gradient(135deg, rgba(34, 56, 49, 0.98), rgba(46, 75, 65, 0.96) 52%, rgba(84, 83, 54, 0.88));
-  border-color: rgba(225, 189, 114, 0.22);
-  box-shadow: 0 18px 42px rgba(6, 22, 18, 0.22);
+    linear-gradient(116deg, transparent 0 28%, rgba(255, 255, 255, 0.12) 43%, transparent 60%),
+    radial-gradient(circle at 50% 34%, rgba(226, 244, 236, 0.16), transparent 25%),
+    radial-gradient(circle at 82% 18%, rgba(225, 189, 114, 0.12), transparent 28%),
+    radial-gradient(circle at 14% 14%, rgba(169, 215, 201, 0.12), transparent 30%),
+    linear-gradient(135deg, rgba(25, 43, 37, 0.84), rgba(36, 63, 54, 0.78) 54%, rgba(56, 60, 42, 0.72));
+  border-color: rgba(226, 244, 236, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(225, 189, 114, 0.1),
+    0 20px 54px rgba(4, 15, 12, 0.24);
 }
 
 :root[data-theme="dark"] .topbar::before {
-  opacity: 0.26;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.09), transparent 46%),
+    radial-gradient(circle at 50% 4%, rgba(255, 255, 255, 0.12), transparent 22%);
+  background-size: auto;
+  opacity: 0.72;
+}
+
+:root[data-theme="dark"] .topbar::after {
+  background: linear-gradient(90deg, transparent, rgba(225, 189, 114, 0.46), rgba(226, 244, 236, 0.18), transparent);
+  box-shadow: 0 -12px 34px rgba(225, 189, 114, 0.12);
 }
 
 :root[data-theme="dark"] .collection-card span,
@@ -837,12 +868,61 @@ svg {
 }
 
 .smart-footer {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin-top: 34px;
+  padding: 8px 0 22px;
+}
+
+.smart-footer-progress,
+.smart-footer-dedication,
+.smart-footer-theme {
   display: none;
 }
 
 .smart-footer-copyright {
+  position: relative;
+  overflow: hidden;
+  width: min(100%, 620px);
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 9px 16px;
+  border: 1px solid rgba(111, 148, 132, 0.18);
+  border-radius: 18px;
+  background:
+    linear-gradient(115deg, transparent 0 28%, rgba(255, 255, 255, 0.22) 44%, transparent 60%),
+    rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.52),
+    0 10px 24px rgba(37, 54, 44, 0.06);
+  color: rgba(31, 77, 67, 0.72);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.7;
+  text-align: center;
   backdrop-filter: var(--glass);
   -webkit-backdrop-filter: var(--glass);
+}
+
+.smart-footer-copyright::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(112deg, transparent 0 22%, rgba(255, 255, 255, 0.2) 44%, transparent 64%),
+    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.2), transparent 38%);
+  opacity: 0.42;
+}
+
+:root[data-theme="dark"] .smart-footer-copyright {
+  border-color: rgba(225, 189, 114, 0.22);
+  background:
+    linear-gradient(115deg, transparent 0 28%, rgba(255, 255, 255, 0.08) 44%, transparent 60%),
+    rgba(226, 244, 236, 0.06);
+  color: rgba(242, 249, 244, 0.7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .category-strip,
@@ -1030,6 +1110,21 @@ svg {
   gap: 12px;
   width: 100%;
   touch-action: pan-y;
+  contain: layout paint;
+}
+
+.dhikr-reader.motion-next .dhikr-card {
+  animation: dhikrCardInNext 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.dhikr-reader.motion-previous .dhikr-card {
+  animation: dhikrCardInPrevious 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.dhikr-reader.motion-section .dhikr-card,
+.dhikr-reader.motion-section .dhikr-reader-meta,
+.dhikr-reader.motion-section .dhikr-reader-controls {
+  animation: dhikrSectionIn 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 .dhikr-reader-meta,
@@ -1076,6 +1171,7 @@ svg {
   height: 7px;
   border-radius: 999px;
   background: rgba(106, 169, 150, 0.28);
+  transition: width 180ms ease, background 180ms ease, opacity 180ms ease;
 }
 
 .dhikr-reader-dots span.active {
@@ -1277,6 +1373,7 @@ svg {
   backdrop-filter: var(--glass);
   position: relative;
   overflow: hidden;
+  contain: layout paint;
   transition:
     border-color 180ms ease,
     box-shadow 180ms ease,
@@ -1425,6 +1522,11 @@ svg {
   min-height: 44px;
   border-radius: 8px;
   padding: 0 18px;
+  transition:
+    transform 120ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .dhikr-actions {
@@ -1467,6 +1569,15 @@ svg {
   background: #72ad9c;
   color: #fff;
   box-shadow: 0 10px 24px rgba(106, 169, 150, 0.2);
+  will-change: transform;
+}
+
+.primary-btn:active,
+.done-btn:active,
+.reset-btn:active,
+.ghost-btn:active,
+.collection-card:active {
+  transform: scale(0.985);
 }
 
 :root[data-theme="dark"] .primary-btn {
@@ -1516,6 +1627,10 @@ svg {
   color: var(--muted);
   padding: 0 14px;
   backdrop-filter: var(--glass);
+  transition:
+    transform 120ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
 }
 
 :root[data-theme="dark"] .reset-btn {
@@ -1524,10 +1639,83 @@ svg {
   border-color: rgba(226, 244, 236, 0.28);
 }
 
+@keyframes dhikrCardInNext {
+  from {
+    opacity: 0;
+    transform: translate3d(-16px, 4px, 0) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes dhikrCardInPrevious {
+  from {
+    opacity: 0;
+    transform: translate3d(16px, 4px, 0) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes dhikrSectionIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dhikr-reader.motion-next .dhikr-card,
+  .dhikr-reader.motion-previous .dhikr-card,
+  .dhikr-reader.motion-section .dhikr-card,
+  .dhikr-reader.motion-section .dhikr-reader-meta,
+  .dhikr-reader.motion-section .dhikr-reader-controls {
+    animation: none;
+  }
+}
+
 .reader-layout {
   display: grid;
-  grid-template-columns: minmax(210px, 280px) minmax(0, 1fr);
-  gap: 18px;
+  grid-template-columns: minmax(210px, 260px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.quran-nav-panel {
+  position: sticky;
+  top: 16px;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.quran-index-trigger,
+.index-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border: 1px solid rgba(199, 167, 90, 0.24);
+  border-radius: 10px;
+  background:
+    linear-gradient(118deg, transparent, rgba(255, 255, 255, 0.36), transparent),
+    var(--warm-glass);
+  color: var(--accent-deep);
+  padding: 0 14px;
+  font-weight: 800;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.62),
+    0 12px 28px rgba(37, 54, 44, 0.08);
+  backdrop-filter: var(--glass);
 }
 
 .surah-list {
@@ -1539,16 +1727,44 @@ svg {
   padding-left: 4px;
 }
 
+.surah-list.quick {
+  max-height: none;
+}
+
 .surah-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
-  min-height: 56px;
+  column-gap: 10px;
+  row-gap: 2px;
+  min-height: 62px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--panel);
-  padding: 0 14px;
+  padding: 9px 12px;
+  text-align: right;
   backdrop-filter: var(--glass);
+}
+
+.surah-item small {
+  grid-row: span 2;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid rgba(199, 167, 90, 0.28);
+  border-radius: 999px;
+  color: var(--gold);
+  font-weight: 800;
+}
+
+.surah-item strong {
+  line-height: 1.15;
+}
+
+.surah-item span {
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .surah-item.active {
@@ -1561,16 +1777,31 @@ svg {
 }
 
 .mushaf-panel {
-  padding: 18px;
+  padding: 16px;
+  background:
+    radial-gradient(circle at 50% 6%, rgba(255, 255, 255, 0.55), transparent 22%),
+    var(--glass-card);
 }
 
 .reader-head {
-  padding-bottom: 18px;
+  padding-bottom: 14px;
   border-bottom: 1px solid var(--line);
 }
 
+.reader-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.index-btn {
+  min-height: 40px;
+  border-radius: 8px;
+  padding: 0 12px;
+}
+
 .reader-head h3 {
-  font-size: 34px;
+  font-size: 30px;
 }
 
 .ayahs {
@@ -1594,23 +1825,107 @@ svg {
 }
 
 .mushaf-page {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
-  min-height: 660px;
-  border: 1px solid rgba(184, 145, 61, 0.3);
-  border-radius: 8px;
+  min-height: 710px;
+  border: 1px solid rgba(48, 89, 76, 0.34);
+  border-radius: 16px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(255, 251, 235, 0.86)),
-    #fffdf4;
-  padding: clamp(22px, 4vw, 44px);
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.42), transparent 44%),
+    linear-gradient(90deg, rgba(238, 229, 199, 0.34), transparent 8%, transparent 92%, rgba(238, 229, 199, 0.34)),
+    linear-gradient(180deg, rgba(255, 253, 244, 0.96), rgba(250, 244, 224, 0.94)),
+    #fbf3d8;
+  padding: clamp(58px, 6vw, 76px) clamp(32px, 5vw, 64px) clamp(34px, 4.6vw, 54px);
   box-shadow:
-    inset 0 0 0 10px rgba(255, 255, 255, 0.34),
-    inset 0 0 0 11px rgba(184, 145, 61, 0.12);
+    inset 0 0 0 7px rgba(250, 243, 219, 0.92),
+    inset 0 0 0 9px rgba(36, 86, 75, 0.72),
+    inset 0 0 0 14px rgba(199, 167, 90, 0.26),
+    inset 0 0 0 18px rgba(255, 255, 255, 0.74),
+    0 22px 56px rgba(37, 54, 44, 0.12);
   touch-action: pan-y;
+}
+
+.mushaf-page::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  z-index: 0;
+  border: 1px solid rgba(36, 86, 75, 0.58);
+  border-radius: 11px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 0 0, rgba(199, 111, 135, 0.62) 0 5px, transparent 6px),
+    radial-gradient(circle at 100% 0, rgba(199, 111, 135, 0.62) 0 5px, transparent 6px),
+    radial-gradient(circle at 0 100%, rgba(199, 111, 135, 0.62) 0 5px, transparent 6px),
+    radial-gradient(circle at 100% 100%, rgba(199, 111, 135, 0.62) 0 5px, transparent 6px),
+    repeating-linear-gradient(90deg, rgba(36, 86, 75, 0.58) 0 10px, rgba(199, 167, 90, 0.42) 10px 14px, rgba(101, 143, 120, 0.5) 14px 24px);
+  background-size: 34px 34px, 34px 34px, 34px 34px, 34px 34px, 44px 8px;
+  background-position: top left, top right, bottom left, bottom right, top center;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat-x;
+  box-shadow:
+    inset 0 0 0 8px rgba(36, 86, 75, 0.12),
+    inset 0 0 0 11px rgba(199, 167, 90, 0.12);
+}
+
+.mushaf-page::after {
+  content: "";
+  position: absolute;
+  inset: 27px 18px;
+  z-index: 0;
+  pointer-events: none;
+  border-inline: 9px solid transparent;
+  border-image: repeating-linear-gradient(
+      180deg,
+      rgba(36, 86, 75, 0.65) 0 9px,
+      rgba(245, 239, 219, 0.85) 9px 12px,
+      rgba(199, 111, 135, 0.5) 12px 17px,
+      rgba(199, 167, 90, 0.42) 17px 22px
+    )
+    9;
+}
+
+.mushaf-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+.mushaf-page-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -30px 10px 18px;
+  color: #30594c;
+  font-family: "Amiri", "Amiri Quran", Calibri, serif;
+  font-size: clamp(15px, 1.45vw, 18px);
+  line-height: 1.2;
+}
+
+.mushaf-page-meta span,
+.mushaf-page-meta strong {
+  display: inline-grid;
+  min-width: 122px;
+  place-items: center;
+  border: 1px solid rgba(48, 89, 76, 0.28);
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, transparent, rgba(199, 167, 90, 0.12), transparent),
+    rgba(255, 250, 232, 0.74);
+  padding: 5px 14px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.mushaf-page-meta strong {
+  color: #8d7230;
+  font-weight: 700;
 }
 
 .mushaf-text {
   flex: 1;
+  animation: mushafPageIn 190ms ease both;
+  will-change: opacity, transform;
 }
 
 .mushaf-page-number {
@@ -1619,7 +1934,7 @@ svg {
   place-items: center;
   width: 46px;
   height: 46px;
-  margin: 28px auto 0;
+  margin: 24px auto 0;
   border: 1px solid rgba(184, 145, 61, 0.5);
   border-radius: 999px;
   background:
@@ -1658,8 +1973,22 @@ svg {
 
 :root[data-theme="dark"] .mushaf-page {
   background:
-    linear-gradient(135deg, rgba(45, 61, 54, 0.92), rgba(44, 42, 31, 0.92)),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06), transparent 44%),
+    linear-gradient(135deg, rgba(45, 61, 54, 0.94), rgba(44, 42, 31, 0.94)),
     #202c27;
+  border-color: rgba(225, 189, 114, 0.28);
+  box-shadow:
+    inset 0 0 0 7px rgba(42, 57, 50, 0.94),
+    inset 0 0 0 9px rgba(225, 189, 114, 0.34),
+    inset 0 0 0 15px rgba(226, 244, 236, 0.06),
+    0 22px 56px rgba(5, 15, 12, 0.24);
+}
+
+:root[data-theme="dark"] .mushaf-page-meta span,
+:root[data-theme="dark"] .mushaf-page-meta strong {
+  background: rgba(226, 244, 236, 0.1);
+  border-color: rgba(225, 189, 114, 0.24);
+  color: #f3e5bd;
 }
 
 :root[data-theme="dark"] .mushaf-text {
@@ -1691,8 +2020,8 @@ svg {
 .mushaf-text {
   color: #18221f;
   font-family: "Amiri Quran", Calibri, serif;
-  font-size: clamp(25px, 2.4vw, 34px);
-  line-height: 2.35;
+  font-size: clamp(27px, 2.55vw, 36px);
+  line-height: 2.42;
   text-align: justify;
   text-align-last: center;
 }
@@ -1721,11 +2050,11 @@ svg {
 .mushaf-opening h4 {
   margin: 0;
   min-width: min(320px, 82%);
-  border: 1px solid rgba(184, 145, 61, 0.34);
+  border: 1px solid rgba(48, 89, 76, 0.34);
   border-radius: 999px;
   background:
-    linear-gradient(90deg, transparent, rgba(184, 145, 61, 0.12), transparent),
-    rgba(255, 255, 255, 0.48);
+    linear-gradient(90deg, transparent, rgba(184, 145, 61, 0.16), transparent),
+    rgba(255, 250, 232, 0.72);
   color: var(--accent-deep);
   padding: 4px 18px 6px;
   font-family: "Amiri", "Amiri Quran", Calibri, serif;
@@ -1755,16 +2084,326 @@ svg {
 
 .mushaf-number {
   display: inline-grid;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   place-items: center;
   margin: 0 6px;
-  border: 1px solid rgba(184, 145, 61, 0.54);
+  border: 1px solid rgba(48, 89, 76, 0.44);
   border-radius: 50%;
   color: var(--gold);
-  font-family: Calibri, serif;
+  font-family: "Amiri", Calibri, serif;
   font-size: 14px;
   line-height: 1;
+}
+
+@keyframes mushafPageIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quran-index-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  justify-items: end;
+  background: rgba(13, 28, 23, 0.28);
+  backdrop-filter: blur(8px);
+  animation: fadeIn 150ms ease both;
+}
+
+.quran-index-drawer {
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  gap: 12px;
+  width: min(430px, 92vw);
+  height: 100%;
+  border-right: 1px solid rgba(255, 255, 255, 0.36);
+  background:
+    linear-gradient(118deg, transparent 0 28%, rgba(255, 255, 255, 0.34) 42%, transparent 60%),
+    linear-gradient(180deg, rgba(255, 253, 245, 0.82), rgba(241, 235, 215, 0.7)),
+    rgba(248, 245, 234, 0.76);
+  box-shadow:
+    inset 1px 0 0 rgba(255, 255, 255, 0.54),
+    -26px 0 60px rgba(18, 35, 29, 0.22);
+  padding: 18px;
+  backdrop-filter: var(--glass-rich);
+  animation: drawerIn 190ms ease both;
+}
+
+.quran-index-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.quran-index-head span {
+  display: block;
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.quran-index-head strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--accent-deep);
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.quran-index-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  border: 1px solid rgba(199, 167, 90, 0.24);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 0 14px;
+  color: var(--muted);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.62);
+}
+
+.quran-index-search input {
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+}
+
+.quran-index-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  border: 1px solid rgba(199, 167, 90, 0.18);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.34);
+  padding: 5px;
+}
+
+.quran-index-tabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 38px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.quran-index-tabs button.active {
+  background: var(--accent-deep);
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(31, 77, 67, 0.16);
+}
+
+.quran-index-body {
+  min-height: 0;
+  overflow: auto;
+  padding: 2px 2px 16px;
+  overscroll-behavior: contain;
+}
+
+.surah-index-list {
+  display: grid;
+  gap: 8px;
+}
+
+.surah-index-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 62px;
+  border: 1px solid rgba(119, 148, 131, 0.22);
+  border-radius: 11px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.54), rgba(255, 251, 238, 0.34)),
+    rgba(255, 255, 255, 0.32);
+  color: var(--ink);
+  padding: 9px 11px;
+  text-align: right;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.54);
+}
+
+.surah-index-item.active {
+  border-color: rgba(199, 167, 90, 0.5);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.64), rgba(247, 235, 199, 0.44)),
+    rgba(255, 255, 255, 0.42);
+  box-shadow:
+    inset 4px 0 0 var(--gold),
+    0 12px 26px rgba(37, 54, 44, 0.08);
+}
+
+.surah-number {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(199, 167, 90, 0.13);
+  color: var(--gold);
+  font-weight: 800;
+}
+
+.surah-index-title {
+  display: grid;
+  gap: 3px;
+}
+
+.surah-index-title strong {
+  font-size: 17px;
+  line-height: 1.15;
+}
+
+.surah-index-title small,
+.surah-index-item i,
+.juz-grid span {
+  color: var(--muted);
+  font-style: normal;
+  font-size: 12px;
+}
+
+.surah-index-item i {
+  color: var(--accent-deep);
+  font-weight: 800;
+}
+
+.juz-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.juz-grid button {
+  display: grid;
+  gap: 5px;
+  min-height: 70px;
+  border: 1px solid rgba(119, 148, 131, 0.22);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.42);
+  color: var(--ink);
+  padding: 10px;
+  text-align: right;
+}
+
+.juz-grid button.active {
+  border-color: rgba(199, 167, 90, 0.5);
+  background: rgba(246, 235, 203, 0.55);
+}
+
+.quran-jump-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.quran-jump-panel form {
+  display: grid;
+  gap: 8px;
+  border: 1px solid rgba(119, 148, 131, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.42);
+  padding: 12px;
+}
+
+.quran-jump-panel label {
+  color: var(--accent-deep);
+  font-weight: 800;
+}
+
+.quran-jump-panel form div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.quran-jump-panel input {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--ink);
+  padding: 0 12px;
+  outline: 0;
+}
+
+:root[data-theme="dark"] .quran-index-overlay {
+  background: rgba(3, 12, 9, 0.44);
+}
+
+:root[data-theme="dark"] .quran-index-drawer {
+  border-color: rgba(226, 244, 236, 0.14);
+  background:
+    linear-gradient(116deg, transparent 0 30%, rgba(255, 255, 255, 0.08) 45%, transparent 64%),
+    linear-gradient(180deg, rgba(29, 49, 42, 0.86), rgba(22, 35, 30, 0.84)),
+    rgba(22, 35, 30, 0.78);
+  box-shadow:
+    inset 1px 0 0 rgba(255, 255, 255, 0.08),
+    -26px 0 60px rgba(0, 0, 0, 0.28);
+}
+
+:root[data-theme="dark"] .quran-index-head strong,
+:root[data-theme="dark"] .quran-jump-panel label,
+:root[data-theme="dark"] .surah-index-item i {
+  color: #f1fbf6;
+}
+
+:root[data-theme="dark"] .quran-index-search,
+:root[data-theme="dark"] .quran-index-tabs,
+:root[data-theme="dark"] .surah-index-item,
+:root[data-theme="dark"] .juz-grid button,
+:root[data-theme="dark"] .quran-jump-panel form,
+:root[data-theme="dark"] .quran-jump-panel input {
+  background: rgba(226, 244, 236, 0.1);
+  border-color: rgba(226, 244, 236, 0.18);
+}
+
+:root[data-theme="dark"] .surah-index-title small,
+:root[data-theme="dark"] .surah-index-item i,
+:root[data-theme="dark"] .juz-grid span {
+  color: #d8e6dd;
+}
+
+:root[data-theme="dark"] .surah-index-item.active,
+:root[data-theme="dark"] .juz-grid button.active {
+  background: rgba(225, 189, 114, 0.12);
+  border-color: rgba(225, 189, 114, 0.38);
+}
+
+@keyframes drawerIn {
+  from {
+    opacity: 0;
+    transform: translateX(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .ayah-text {
@@ -2030,12 +2669,71 @@ svg {
     padding-bottom: 8px;
   }
 
+  .quran-nav-panel {
+    position: static;
+    gap: 8px;
+  }
+
+  .quran-index-trigger {
+    min-height: 42px;
+  }
+
+  .surah-list.quick {
+    display: flex;
+    overflow-x: auto;
+    padding: 2px 2px 8px;
+    scroll-snap-type: x proximity;
+  }
+
   .mushaf-page {
     min-height: 520px;
   }
 
   .surah-item {
     flex: 0 0 150px;
+    scroll-snap-align: start;
+  }
+
+  .quran-index-overlay {
+    align-items: end;
+    justify-items: stretch;
+    padding-top: 58px;
+  }
+
+  .quran-index-drawer {
+    width: 100%;
+    height: min(82vh, 720px);
+    border-radius: 24px 24px 0 0;
+    border-right: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.42);
+    padding: 14px;
+    animation-name: sheetIn;
+  }
+
+  .quran-index-drawer::before {
+    content: "";
+    justify-self: center;
+    width: 46px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(31, 77, 67, 0.22);
+  }
+
+  .quran-index-head strong {
+    font-size: 22px;
+  }
+
+  .quran-index-tabs {
+    gap: 4px;
+  }
+
+  .quran-index-tabs button {
+    font-size: 11.5px;
+    padding: 0 3px;
+  }
+
+  .juz-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .collection-grid {
@@ -2085,15 +2783,13 @@ svg {
 
   .smart-footer {
     display: grid;
-    gap: 10px;
+    gap: 12px;
     margin-top: 34px;
-    padding-top: 12px;
+    padding: 12px 0 10px;
   }
 
   .smart-footer-progress,
-  .smart-footer-dedication,
-  .smart-footer-theme,
-  .smart-footer-copyright {
+  .smart-footer-theme {
     border: 1px solid var(--line);
     border-radius: 12px;
     background: var(--warm-glass);
@@ -2156,38 +2852,149 @@ svg {
   }
 
   .smart-footer-dedication {
+    position: relative;
+    overflow: hidden;
     display: grid;
-    gap: 5px;
-    padding: 14px;
+    gap: 7px;
+    width: 100%;
+    padding: 20px 18px 21px;
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 24px;
+    background:
+      radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.78), transparent 26%),
+      radial-gradient(circle at 86% 18%, rgba(199, 167, 90, 0.16), transparent 28%),
+      linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(255, 249, 231, 0.68)),
+      rgba(255, 255, 255, 0.56);
     text-align: center;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.86),
+      inset 0 -1px 0 rgba(199, 167, 90, 0.08),
+      0 20px 44px rgba(37, 54, 44, 0.12);
+    backdrop-filter: blur(22px) saturate(150%);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+  }
+
+  .smart-footer-dedication::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: -32px;
+    inset-block-end: -38px;
+    width: 132px;
+    height: 132px;
+    pointer-events: none;
+    opacity: 0.2;
+    background:
+      radial-gradient(circle at 50% 50%, transparent 0 24%, rgba(199, 167, 90, 0.5) 25% 26%, transparent 27%),
+      repeating-conic-gradient(from 45deg, rgba(23, 76, 60, 0.42) 0 8deg, transparent 8deg 16deg);
+    border-radius: 50%;
+    mask-image: radial-gradient(circle, #000 0 58%, transparent 59%);
+    -webkit-mask-image: radial-gradient(circle, #000 0 58%, transparent 59%);
+  }
+
+  .smart-footer-dedication::after {
+    content: "";
+    position: absolute;
+    inset-inline-end: -12px;
+    inset-block-end: 0;
+    width: 72%;
+    height: 54px;
+    pointer-events: none;
+    background:
+      linear-gradient(156deg, transparent 0 44%, rgba(255, 255, 255, 0.72) 45% 63%, transparent 64%),
+      linear-gradient(168deg, transparent 0 50%, rgba(199, 167, 90, 0.55) 51% 54%, transparent 55%);
+    opacity: 0.72;
   }
 
   .smart-footer-dedication span,
   .smart-footer-dedication p:last-child {
     color: var(--gold);
     font-weight: 800;
+    position: relative;
+    z-index: 1;
   }
 
   .smart-footer-dedication p,
   .smart-footer-dedication strong {
     margin: 0;
+    position: relative;
+    z-index: 1;
   }
 
   .smart-footer-dedication p {
     color: var(--muted);
+    font-size: 18px;
   }
 
   .smart-footer-dedication strong {
     color: var(--ink);
+    font-size: clamp(21px, 5.2vw, 25px);
+    line-height: 1.45;
+    white-space: nowrap;
+  }
+
+  .smart-footer-dedication span {
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  .smart-footer-dedication .memorial-names {
+    width: min(100%, 620px);
+    margin: 2px auto 0;
+    padding-top: 8px;
+    border-top-color: rgba(199, 167, 90, 0.2);
+    gap: 3px;
+  }
+
+  .smart-footer-dedication .memorial-dua {
+    margin-top: 3px;
     font-size: 19px;
   }
 
   .smart-footer-copyright {
-    margin: 0;
-    padding: 10px 12px;
-    color: var(--muted);
-    font-size: 13px;
+    width: 100%;
+    max-width: 100%;
+    margin: -3px auto 0;
+    padding: 10px 14px;
+    border-radius: 18px;
+    border-color: rgba(255, 255, 255, 0.58);
+    background:
+      linear-gradient(116deg, transparent 0 28%, rgba(255, 255, 255, 0.28) 45%, transparent 62%),
+      rgba(255, 255, 255, 0.38);
+    color: rgba(31, 77, 67, 0.68);
+    font-size: 11.5px;
+    font-weight: 600;
     text-align: center;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.68),
+      0 10px 22px rgba(37, 54, 44, 0.06);
+  }
+
+  :root[data-theme="dark"] .smart-footer-dedication {
+    border-color: rgba(226, 244, 236, 0.24);
+    background:
+      radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.12), transparent 26%),
+      radial-gradient(circle at 86% 18%, rgba(225, 189, 114, 0.18), transparent 28%),
+      linear-gradient(145deg, rgba(35, 58, 50, 0.84), rgba(68, 63, 42, 0.54)),
+      rgba(20, 32, 27, 0.72);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 44px rgba(0, 0, 0, 0.24);
+  }
+
+  :root[data-theme="dark"] .smart-footer-dedication p {
+    color: rgba(238, 247, 241, 0.78);
+  }
+
+  :root[data-theme="dark"] .smart-footer-dedication strong {
+    color: #f6fbf7;
+  }
+
+  :root[data-theme="dark"] .smart-footer-copyright {
+    border-color: rgba(226, 244, 236, 0.18);
+    background:
+      linear-gradient(116deg, transparent 0 28%, rgba(255, 255, 255, 0.08) 45%, transparent 62%),
+      rgba(226, 244, 236, 0.06);
+    color: rgba(242, 249, 244, 0.68);
   }
 }
 
@@ -2285,6 +3092,21 @@ svg {
     padding: 18px;
   }
 
+  .mushaf-page {
+    padding: 50px 18px 28px;
+  }
+
+  .mushaf-page-meta {
+    margin: -24px 6px 14px;
+  }
+
+  .mushaf-page-meta span,
+  .mushaf-page-meta strong {
+    min-width: 0;
+    padding: 4px 9px;
+    font-size: 13px;
+  }
+
   .page-controls {
     display: grid;
     grid-template-columns: 1fr;
@@ -2314,5 +3136,16 @@ svg {
 
   .nav-tab span {
     font-size: 13px;
+  }
+}
+
+@keyframes sheetIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

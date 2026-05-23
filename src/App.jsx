@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { BookOpen, Heart, RotateCcw, Sparkles, Star, Sun, Undo2 } from "lucide-react";
+import { BookOpen, Bookmark, Hash, Heart, Layers, List, RotateCcw, Search, Sparkles, Star, Sun, Undo2, X } from "lucide-react";
 import DhikrCard from "./components/DhikrCard.jsx";
 import EmptyState from "./components/EmptyState.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import Topbar from "./components/Topbar.jsx";
 import { surahMeta, tasbeehPhrases } from "./data";
-import { fetchAllDhikr, fetchQuranChapters, fetchQuranPage } from "./services/islamicApi";
+import { fetchAllDhikr, fetchQuranChapters, fetchQuranPage, fetchQuranVersePage } from "./services/islamicApi";
 
 const views = {
   adhkar: { label: "الأذكار", title: "وردك اليومي بهدوء", icon: Sun },
@@ -17,6 +17,46 @@ const views = {
 const BASMALA = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
 const ISTIADHA = "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ";
 const FEATURED_COLLECTIONS = ["morning", "evening"];
+const COPYRIGHT_TEXT = "© محمد عادل حسن طه — جميع الحقوق محفوظة";
+const JUZ_NAMES = [
+  "الأول",
+  "الثاني",
+  "الثالث",
+  "الرابع",
+  "الخامس",
+  "السادس",
+  "السابع",
+  "الثامن",
+  "التاسع",
+  "العاشر",
+  "الحادي عشر",
+  "الثاني عشر",
+  "الثالث عشر",
+  "الرابع عشر",
+  "الخامس عشر",
+  "السادس عشر",
+  "السابع عشر",
+  "الثامن عشر",
+  "التاسع عشر",
+  "العشرون",
+  "الحادي والعشرون",
+  "الثاني والعشرون",
+  "الثالث والعشرون",
+  "الرابع والعشرون",
+  "الخامس والعشرون",
+  "السادس والعشرون",
+  "السابع والعشرون",
+  "الثامن والعشرون",
+  "التاسع والعشرون",
+  "الثلاثون"
+];
+const JUZ_START_PAGES = [1, 22, 42, 62, 82, 102, 121, 142, 162, 182, 201, 222, 242, 262, 282, 302, 322, 342, 362, 382, 402, 422, 442, 462, 482, 502, 522, 542, 562, 582];
+const QURAN_INDEX_TABS = [
+  { id: "surahs", label: "السور", icon: BookOpen },
+  { id: "juz", label: "الأجزاء", icon: Layers },
+  { id: "pages", label: "الصفحات", icon: Hash },
+  { id: "favorites", label: "المفضلة", icon: Bookmark }
+];
 
 function readStorage(key, fallback) {
   try {
@@ -87,9 +127,13 @@ function formatDhikrCount(count) {
   return `${count} ذكر`;
 }
 
+function formatJuzName(juzNumber) {
+  return JUZ_NAMES[juzNumber - 1] ? `الجزء ${JUZ_NAMES[juzNumber - 1]}` : "الجزء";
+}
+
 export default function App() {
   const [activeView, setActiveView] = useState("adhkar");
-  const [category, setCategory] = useState("morning");
+  const [category, setCategory] = useState(() => localStorage.getItem("hirz-dhikr-category") || "morning");
   const [query, setQuery] = useState("");
   const [selectedSurah, setSelectedSurah] = useState("surah-1");
   const [dhikrItems, setDhikrItems] = useState([]);
@@ -104,7 +148,7 @@ export default function App() {
       ayahs: []
     }))
   );
-  const [quranPage, setQuranPage] = useState(1);
+  const [quranPage, setQuranPage] = useState(() => Number(readStorage("hirz-quran-page", 1)) || 1);
   const [pageVerses, setPageVerses] = useState([]);
   const [loading, setLoading] = useState({ dhikr: true, quran: true });
   const [errors, setErrors] = useState({ dhikr: "", quran: "" });
@@ -112,16 +156,35 @@ export default function App() {
   const [favorites, setFavorites] = useState(() => readStorage("hirz-favorites", []));
   const [tasbeeh, setTasbeeh] = useState(0);
   const [theme, setTheme] = useState(() => localStorage.getItem("hirz-theme") || "light");
-  const [activeDhikrIndex, setActiveDhikrIndex] = useState(0);
+  const [activeDhikrIndex, setActiveDhikrIndex] = useState(() => Number(readStorage("hirz-dhikr-index-morning", 0)) || 0);
   const [showMoreCollections, setShowMoreCollections] = useState(false);
+  const [quranIndexOpen, setQuranIndexOpen] = useState(false);
+  const [quranIndexTab, setQuranIndexTab] = useState("surahs");
+  const [quranIndexQuery, setQuranIndexQuery] = useState("");
+  const [pageJumpInput, setPageJumpInput] = useState(() => String(Number(readStorage("hirz-quran-page", 1)) || 1));
+  const [ayahJumpInput, setAyahJumpInput] = useState("");
+  const [recentSurahs, setRecentSurahs] = useState(() => readStorage("hirz-recent-surahs", []));
+  const [dhikrMotion, setDhikrMotion] = useState("idle");
   const touchStart = useRef(null);
   const quranTouchStart = useRef(null);
   const quranPageCache = useRef(new Map());
+  const collectionRefs = useRef(new Map());
+  const dhikrMotionTimeout = useRef(null);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem("hirz-theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem("hirz-dhikr-category", category);
+  }, [category]);
+
+  useEffect(() => {
+    return () => {
+      window.clearTimeout(dhikrMotionTimeout.current);
+    };
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -161,6 +224,34 @@ export default function App() {
       isMounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("hirz-quran-page", JSON.stringify(quranPage));
+    setPageJumpInput(String(quranPage));
+    [quranPage - 1, quranPage + 1].forEach((page) => {
+      if (page < 1 || page > 604 || quranPageCache.current.has(page)) {
+        return;
+      }
+      fetchQuranPage(page)
+        .then((verses) => {
+          quranPageCache.current.set(page, verses);
+        })
+        .catch(() => {});
+    });
+  }, [quranPage]);
+
+  useEffect(() => {
+    if (!quranIndexOpen) {
+      return;
+    }
+    function closeOnEscape(event) {
+      if (event.key === "Escape") {
+        setQuranIndexOpen(false);
+      }
+    }
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [quranIndexOpen]);
 
   useEffect(() => {
     let isMounted = true;
@@ -233,6 +324,8 @@ export default function App() {
       return groups;
     }, []);
   }, [pageVerses, quranChapters]);
+  const activePageSurah = quranPageSurahs[0]?.surahName || activeSurah.name;
+  const activePageJuz = pageVerses[0]?.juzNumber || 1;
   const completedCount = dhikrItems.filter((item) => (counts[item.id] || 0) >= item.target).length;
   const progress = dhikrItems.length ? Math.round((completedCount / dhikrItems.length) * 100) : 0;
   const morningItems = dhikrItems.filter((item) => item.collectionId === "morning");
@@ -268,6 +361,37 @@ export default function App() {
     });
   }, [quranChapters, query]);
 
+  const quranIndexSurahs = useMemo(() => {
+    return quranChapters.filter((surah) => {
+      const queryText = `${surah.number} ${surah.name} ${surah.revelation} ${surah.versesCount}`;
+      return semanticMatch(queryText, quranIndexQuery);
+    });
+  }, [quranChapters, quranIndexQuery]);
+
+  const quranFavoriteSurahs = useMemo(() => {
+    return quranChapters.filter((surah) => favorites.includes(surah.id));
+  }, [favorites, quranChapters]);
+
+  const quickSurahs = useMemo(() => {
+    const currentIndex = quranChapters.findIndex((surah) => surah.id === activeSurah.id);
+    const candidates = [
+      quranChapters[currentIndex - 1],
+      activeSurah,
+      quranChapters[currentIndex + 1],
+      ...recentSurahs.map((id) => quranChapters.find((surah) => surah.id === id)),
+      ...quranFavoriteSurahs.slice(0, 2)
+    ].filter(Boolean);
+
+    const seen = new Set();
+    return candidates.filter((surah) => {
+      if (seen.has(surah.id)) {
+        return false;
+      }
+      seen.add(surah.id);
+      return true;
+    }).slice(0, 5);
+  }, [activeSurah, quranChapters, quranFavoriteSurahs, recentSurahs]);
+
   const featuredCategories = useMemo(() => {
     return dhikrCategories.filter((item) => FEATURED_COLLECTIONS.includes(item.id));
   }, [dhikrCategories]);
@@ -276,13 +400,25 @@ export default function App() {
     return dhikrCategories.filter((item) => !FEATURED_COLLECTIONS.includes(item.id));
   }, [dhikrCategories]);
 
+  const orderedDhikrCategories = useMemo(() => {
+    return [...featuredCategories, ...moreCategories];
+  }, [featuredCategories, moreCategories]);
+
   const activeDhikrItem = filteredDhikr[activeDhikrIndex] || filteredDhikr[0];
   const filteredCompletedCount = filteredDhikr.filter((item) => (counts[item.id] || 0) >= item.target).length;
   const filteredProgress = filteredDhikr.length ? Math.round((filteredCompletedCount / filteredDhikr.length) * 100) : 0;
 
   useEffect(() => {
-    setActiveDhikrIndex(0);
-  }, [category, query]);
+    const storedIndex = hasSearchQuery ? 0 : Number(readStorage(`hirz-dhikr-index-${category}`, 0)) || 0;
+    triggerDhikrMotion("section");
+    setActiveDhikrIndex(Math.min(storedIndex, Math.max(0, filteredDhikr.length - 1)));
+  }, [category, filteredDhikr.length, hasSearchQuery]);
+
+  useEffect(() => {
+    if (!hasSearchQuery && filteredDhikr.length) {
+      localStorage.setItem(`hirz-dhikr-index-${category}`, JSON.stringify(activeDhikrIndex));
+    }
+  }, [activeDhikrIndex, category, filteredDhikr.length, hasSearchQuery]);
 
   useEffect(() => {
     if (activeDhikrIndex >= filteredDhikr.length) {
@@ -335,8 +471,77 @@ export default function App() {
     localStorage.setItem("hirz-favorites", JSON.stringify(nextFavorites));
   }
 
+  function triggerDhikrMotion(type) {
+    window.clearTimeout(dhikrMotionTimeout.current);
+    setDhikrMotion(type);
+    dhikrMotionTimeout.current = window.setTimeout(() => setDhikrMotion("idle"), 240);
+  }
+
+  function selectDhikrCategory(nextCategory) {
+    if (!nextCategory || nextCategory === category) {
+      return;
+    }
+    triggerDhikrMotion("section");
+    setCategory(nextCategory);
+    window.requestAnimationFrame(() => {
+      collectionRefs.current.get(nextCategory)?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center"
+      });
+    });
+  }
+
   function toggleFavorite(id) {
     saveFavorites(favorites.includes(id) ? favorites.filter((item) => item !== id) : [...favorites, id]);
+  }
+
+  function rememberSurah(surahId) {
+    const next = [surahId, ...recentSurahs.filter((id) => id !== surahId)].slice(0, 6);
+    setRecentSurahs(next);
+    localStorage.setItem("hirz-recent-surahs", JSON.stringify(next));
+  }
+
+  function goToQuranPage(page) {
+    const safePage = Math.min(604, Math.max(1, Number(page) || 1));
+    setQuranPage(safePage);
+    window.requestAnimationFrame(() => {
+      document.querySelector(".mushaf-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  function selectSurah(surah, shouldClose = true) {
+    setSelectedSurah(surah.id);
+    rememberSurah(surah.id);
+    goToQuranPage(surah.pageStart || 1);
+    if (shouldClose) {
+      setQuranIndexOpen(false);
+    }
+  }
+
+  function selectJuz(juzNumber) {
+    goToQuranPage(JUZ_START_PAGES[juzNumber - 1] || 1);
+    setQuranIndexOpen(false);
+  }
+
+  function submitPageJump(event) {
+    event.preventDefault();
+    goToQuranPage(pageJumpInput);
+    setQuranIndexOpen(false);
+  }
+
+  function submitAyahJump(event) {
+    event.preventDefault();
+    const ayah = Math.min(activeSurah.versesCount || 1, Math.max(1, Number(ayahJumpInput) || 1));
+    fetchQuranVersePage(activeSurah.number, ayah)
+      .then((page) => {
+        goToQuranPage(page);
+        setQuranIndexOpen(false);
+      })
+      .catch(() => {
+        goToQuranPage(activeSurah.pageStart || 1);
+        setQuranIndexOpen(false);
+      });
   }
 
   function incrementDhikr(item) {
@@ -363,6 +568,7 @@ export default function App() {
       delete nextCounts[item.id];
     });
     saveCounts(nextCounts);
+    triggerDhikrMotion("previous");
     setActiveDhikrIndex(0);
     window.requestAnimationFrame(() => {
       document.querySelector(".dhikr-stack")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -383,10 +589,12 @@ export default function App() {
   }
 
   function goToNextDhikr() {
+    triggerDhikrMotion("next");
     setActiveDhikrIndex((current) => (filteredDhikr.length ? Math.min(current + 1, filteredDhikr.length - 1) : 0));
   }
 
   function goToPreviousDhikr() {
+    triggerDhikrMotion("previous");
     setActiveDhikrIndex((current) => Math.max(current - 1, 0));
   }
 
@@ -403,7 +611,7 @@ export default function App() {
       : null;
   }
 
-  function readHorizontalSwipe(event, ref, threshold = 96) {
+  function readHorizontalSwipe(event, ref, threshold = 72) {
     const start = ref.current;
     ref.current = null;
     if (!start || !start.isAllowedArea || start.startedOnControl) {
@@ -420,7 +628,7 @@ export default function App() {
     const absX = Math.abs(deltaX);
     const absY = Math.abs(deltaY);
 
-    if (absX < threshold || absX < absY * 1.8 || absY > 64) {
+    if (absX < threshold || absX < absY * 1.45 || absY > 82) {
       return 0;
     }
 
@@ -432,7 +640,7 @@ export default function App() {
   }
 
   function handleDhikrTouchEnd(event) {
-    const delta = readHorizontalSwipe(event, touchStart, 110);
+    const delta = readHorizontalSwipe(event, touchStart, 72);
     if (!delta) {
       return;
     }
@@ -444,11 +652,11 @@ export default function App() {
   }
 
   function goToNextQuranPage() {
-    setQuranPage((page) => Math.min(604, page + 1));
+    goToQuranPage(quranPage + 1);
   }
 
   function goToPreviousQuranPage() {
-    setQuranPage((page) => Math.max(1, page - 1));
+    goToQuranPage(quranPage - 1);
   }
 
   function handleQuranTouchStart(event) {
@@ -533,8 +741,15 @@ export default function App() {
                       className={`collection-card ${category === item.id ? "active" : ""}`}
                       type="button"
                       key={item.id}
+                      ref={(node) => {
+                        if (node) {
+                          collectionRefs.current.set(item.id, node);
+                        } else {
+                          collectionRefs.current.delete(item.id);
+                        }
+                      }}
                       aria-pressed={category === item.id}
-                      onClick={() => setCategory(item.id)}
+                      onClick={() => selectDhikrCategory(item.id)}
                     >
                       <strong>{item.label}</strong>
                       <span>{item.description}</span>
@@ -554,8 +769,15 @@ export default function App() {
                         className={`collection-card compact ${category === item.id ? "active" : ""}`}
                         type="button"
                         key={item.id}
+                        ref={(node) => {
+                          if (node) {
+                            collectionRefs.current.set(item.id, node);
+                          } else {
+                            collectionRefs.current.delete(item.id);
+                          }
+                        }}
                         aria-pressed={category === item.id}
-                        onClick={() => setCategory(item.id)}
+                        onClick={() => selectDhikrCategory(item.id)}
                       >
                         <strong>{item.label}</strong>
                         <span>{item.description}</span>
@@ -582,7 +804,7 @@ export default function App() {
               ) : errors.dhikr ? (
                 <EmptyState text={errors.dhikr} />
               ) : filteredDhikr.length ? (
-                <div className="dhikr-reader" onTouchStart={handleDhikrTouchStart} onTouchEnd={handleDhikrTouchEnd}>
+                <div className={`dhikr-reader motion-${dhikrMotion}`} onTouchStart={handleDhikrTouchStart} onTouchEnd={handleDhikrTouchEnd}>
                   <div className="dhikr-reader-meta">
                     <span>{activeDhikrIndex + 1} من {filteredDhikr.length}</span>
                     <div className="section-progress" aria-label="تقدم القسم الحالي">
@@ -621,21 +843,25 @@ export default function App() {
 
         {activeView === "quran" && (
           <section className="reader-layout">
-            <div className="surah-list" aria-label="السور">
-              {filteredSurahs.map((surah) => (
-                <button
-                  className={`surah-item ${surah.id === selectedSurah ? "active" : ""}`}
-                  type="button"
-                  key={surah.id}
-                  onClick={() => {
-                    setSelectedSurah(surah.id);
-                    setQuranPage(surah.pageStart || 1);
-                  }}
-                >
-                  <strong>{surah.name}</strong>
-                  <span>{surah.pageStart}</span>
-                </button>
-              ))}
+            <div className="quran-nav-panel" aria-label="تنقل مختصر في المصحف">
+              <button className="quran-index-trigger" type="button" onClick={() => setQuranIndexOpen(true)}>
+                <List size={18} aria-hidden="true" />
+                فهرس المصحف
+              </button>
+              <div className="surah-list quick" aria-label="السور القريبة">
+                {quickSurahs.map((surah) => (
+                  <button
+                    className={`surah-item ${surah.id === selectedSurah ? "active" : ""}`}
+                    type="button"
+                    key={surah.id}
+                    onClick={() => selectSurah(surah, false)}
+                  >
+                    <small>{surah.number}</small>
+                    <strong>{surah.name}</strong>
+                    <span>{surah.revelation} - {surah.versesCount} آية</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             <article className="mushaf-panel">
@@ -644,14 +870,20 @@ export default function App() {
                   <p className="eyebrow">{activeSurah.revelation} - {activeSurah.versesCount} آية</p>
                   <h3>{activeSurah.name}</h3>
                 </div>
-                <button
-                  className={`icon-btn ${favorites.includes(activeSurah.id) ? "active" : ""}`}
-                  type="button"
-                  onClick={() => toggleFavorite(activeSurah.id)}
-                  aria-label="إضافة السورة للمفضلة"
-                >
-                  <Star size={20} fill="currentColor" />
-                </button>
+                <div className="reader-actions">
+                  <button className="index-btn" type="button" onClick={() => setQuranIndexOpen(true)}>
+                    <List size={18} aria-hidden="true" />
+                    الفهرس
+                  </button>
+                  <button
+                    className={`icon-btn ${favorites.includes(activeSurah.id) ? "active" : ""}`}
+                    type="button"
+                    onClick={() => toggleFavorite(activeSurah.id)}
+                    aria-label="إضافة السورة للمفضلة"
+                  >
+                    <Star size={20} fill="currentColor" />
+                  </button>
+                </div>
               </div>
               <div className="mushaf-page" onTouchStart={handleQuranTouchStart} onTouchEnd={handleQuranTouchEnd}>
                 {loading.quran ? (
@@ -661,27 +893,33 @@ export default function App() {
                 ) : !pageVerses.length ? (
                   <EmptyState text="لم تظهر آيات هذه السورة بعد. أعد تحميل الصفحة أو تحقق من الاتصال." />
                 ) : (
-                  <div className="mushaf-text">
-                    {quranPageSurahs.map((section) => (
-                      <section className="mushaf-surah-section" key={`${quranPage}-${section.surahNumber}`}>
-                        {(section.showIstiadhah || section.showBasmala) && (
-                          <div className="mushaf-opening">
-                            <h4>{section.surahName}</h4>
-                            {section.showIstiadhah && <p className="mushaf-istiadhah">{ISTIADHA}</p>}
-                            {section.showBasmala && <p className="mushaf-basmala">{BASMALA}</p>}
-                          </div>
-                        )}
-                        <p>
-                          {section.ayahs.map((ayah) => (
-                            <span className="mushaf-ayah" key={ayah.key}>
-                              {ayah.text}
-                              <span className="mushaf-number">{ayah.ayahNumber}</span>
-                            </span>
-                          ))}
-                        </p>
-                      </section>
-                    ))}
-                  </div>
+                  <>
+                    <div className="mushaf-page-meta" aria-label="بيانات الصفحة">
+                      <span>{formatJuzName(activePageJuz)}</span>
+                      <strong>{activePageSurah}</strong>
+                    </div>
+                    <div className="mushaf-text" key={`quran-page-${quranPage}`}>
+                      {quranPageSurahs.map((section) => (
+                        <section className="mushaf-surah-section" key={`${quranPage}-${section.surahNumber}`}>
+                          {(section.showIstiadhah || section.showBasmala) && (
+                            <div className="mushaf-opening">
+                              <h4>{section.surahName}</h4>
+                              {section.showIstiadhah && <p className="mushaf-istiadhah">{ISTIADHA}</p>}
+                              {section.showBasmala && <p className="mushaf-basmala">{BASMALA}</p>}
+                            </div>
+                          )}
+                          <p>
+                            {section.ayahs.map((ayah) => (
+                              <span className="mushaf-ayah" key={ayah.key}>
+                                {ayah.text}
+                                <span className="mushaf-number">{ayah.ayahNumber}</span>
+                              </span>
+                            ))}
+                          </p>
+                        </section>
+                      ))}
+                    </div>
+                  </>
                 )}
                 {!loading.quran && !errors.quran && pageVerses.length > 0 && (
                   <div className="mushaf-page-number" aria-label={`رقم الصفحة ${quranPage}`}>
@@ -699,6 +937,122 @@ export default function App() {
                 </button>
               </div>
             </article>
+
+            {quranIndexOpen && (
+              <div className="quran-index-overlay" role="presentation" onClick={() => setQuranIndexOpen(false)}>
+                <aside className="quran-index-drawer" role="dialog" aria-modal="true" aria-label="فهرس المصحف" onClick={(event) => event.stopPropagation()}>
+                  <div className="quran-index-head">
+                    <div>
+                      <span>فهرس المصحف</span>
+                      <strong>{activeSurah.name}</strong>
+                    </div>
+                    <button className="icon-btn" type="button" onClick={() => setQuranIndexOpen(false)} aria-label="إغلاق الفهرس">
+                      <X size={19} aria-hidden="true" />
+                    </button>
+                  </div>
+
+                  <form className="quran-index-search" role="search" onSubmit={(event) => event.preventDefault()}>
+                    <Search size={18} aria-hidden="true" />
+                    <input
+                      type="search"
+                      value={quranIndexQuery}
+                      onChange={(event) => setQuranIndexQuery(event.target.value)}
+                      placeholder="ابحث باسم السورة أو رقمها"
+                    />
+                  </form>
+
+                  <div className="quran-index-tabs" role="tablist" aria-label="تبويبات فهرس المصحف">
+                    {QURAN_INDEX_TABS.map((tab) => {
+                      const Icon = tab.icon;
+                      return (
+                        <button
+                          className={quranIndexTab === tab.id ? "active" : ""}
+                          type="button"
+                          role="tab"
+                          aria-selected={quranIndexTab === tab.id}
+                          key={tab.id}
+                          onClick={() => setQuranIndexTab(tab.id)}
+                        >
+                          <Icon size={16} aria-hidden="true" />
+                          {tab.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="quran-index-body">
+                    {quranIndexTab === "surahs" && (
+                      <div className="surah-index-list">
+                        {quranIndexSurahs.map((surah) => (
+                          <button
+                            className={`surah-index-item ${surah.id === selectedSurah ? "active" : ""}`}
+                            type="button"
+                            key={surah.id}
+                            onClick={() => selectSurah(surah)}
+                          >
+                            <span className="surah-number">{surah.number}</span>
+                            <span className="surah-index-title">
+                              <strong>{surah.name}</strong>
+                              <small>{surah.revelation} - {surah.versesCount} آية</small>
+                            </span>
+                            {surah.id === selectedSurah && <i>الحالية</i>}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {quranIndexTab === "juz" && (
+                      <div className="juz-grid">
+                        {JUZ_START_PAGES.map((page, index) => (
+                          <button className={activePageJuz === index + 1 ? "active" : ""} type="button" key={page} onClick={() => selectJuz(index + 1)}>
+                            <strong>{formatJuzName(index + 1)}</strong>
+                            <span>صفحة {page}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {quranIndexTab === "pages" && (
+                      <div className="quran-jump-panel">
+                        <form onSubmit={submitPageJump}>
+                          <label htmlFor="quran-page-jump">انتقل إلى صفحة</label>
+                          <div>
+                            <input id="quran-page-jump" inputMode="numeric" min="1" max="604" value={pageJumpInput} onChange={(event) => setPageJumpInput(event.target.value)} />
+                            <button className="primary-btn" type="submit">اذهب</button>
+                          </div>
+                        </form>
+                        <form onSubmit={submitAyahJump}>
+                          <label htmlFor="quran-ayah-jump">آية في {activeSurah.name}</label>
+                          <div>
+                            <input id="quran-ayah-jump" inputMode="numeric" min="1" max={activeSurah.versesCount || 1} value={ayahJumpInput} onChange={(event) => setAyahJumpInput(event.target.value)} placeholder={`1 - ${activeSurah.versesCount}`} />
+                            <button className="ghost-btn" type="submit">انتقل</button>
+                          </div>
+                        </form>
+                      </div>
+                    )}
+
+                    {quranIndexTab === "favorites" && (
+                      <div className="surah-index-list">
+                        {quranFavoriteSurahs.length ? (
+                          quranFavoriteSurahs.map((surah) => (
+                            <button className={`surah-index-item ${surah.id === selectedSurah ? "active" : ""}`} type="button" key={surah.id} onClick={() => selectSurah(surah)}>
+                              <span className="surah-number">{surah.number}</span>
+                              <span className="surah-index-title">
+                                <strong>{surah.name}</strong>
+                                <small>{surah.revelation} - {surah.versesCount} آية</small>
+                              </span>
+                              <Star size={16} fill="currentColor" aria-hidden="true" />
+                            </button>
+                          ))
+                        ) : (
+                          <EmptyState text="لم تضف سورًا للمفضلة بعد." />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </aside>
+              </div>
+            )}
           </section>
         )}
 
@@ -780,7 +1134,7 @@ export default function App() {
             <p className="memorial-dua">ولجميع أموات المسلمين</p>
           </div>
 
-          <p className="smart-footer-copyright">تصميم وتطوير: محمد عادل حسن طه</p>
+          <p className="smart-footer-copyright">{COPYRIGHT_TEXT}</p>
         </footer>
       </main>
     </div>
