@@ -3932,33 +3932,45 @@ svg {
   }
 
   .smart-footer-dedication span {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .smart-footer-dedication p {
-    font-size: 14px;
+    font-size: 12.8px;
   }
 
   .smart-footer-dedication strong {
-    font-size: clamp(16px, 4.2vw, 19px);
-    line-height: 1.38;
+    font-size: clamp(14.5px, 3.8vw, 17px);
+    line-height: 1.34;
   }
 
   .smart-footer-dedication .memorial-dua {
-    font-size: 15px;
+    font-size: 13.5px;
+  }
+
+  .smart-footer-dedication {
+    gap: 4px;
+    padding: 14px 14px 15px;
+    border-radius: 20px;
+  }
+
+  .smart-footer-dedication .memorial-names {
+    gap: 1px;
+    margin-top: 1px;
+    padding-top: 5px;
   }
 }
 
 @media (max-width: 520px) {
   .smart-footer-dedication span {
-    font-size: 17px;
+    font-size: 15.5px;
   }
 
   .smart-footer-dedication p {
-    font-size: 13.5px;
+    font-size: 12.5px;
   }
 
   .smart-footer-dedication strong {
-    font-size: 17px;
+    font-size: 15.8px;
   }
 }
