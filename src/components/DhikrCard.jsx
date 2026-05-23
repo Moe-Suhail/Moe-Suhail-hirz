@@ -18,8 +18,26 @@ function MisbahaIcon() {
   );
 }
 
+function formatDhikrText(text) {
+  const normalized = text
+    .replace(/\{/g, "﴿")
+    .replace(/\}/g, "﴾")
+    .replace(/\s+\*/g, " ")
+    .replace(/\*\s+/g, " ");
+  const istiadhahPattern = /^\s*[\(﴿\[]?\s*(أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ|أعوذ بالله من الشيطان الرجيم)\s*[\)﴾\]]?\s*/;
+  const match = normalized.match(istiadhahPattern);
+  if (!match) {
+    return { istiadhah: "", body: normalized };
+  }
+  return {
+    istiadhah: match[1],
+    body: normalized.slice(match[0].length).trim()
+  };
+}
+
 export default function DhikrCard({ item, count, isFavorite, onFavorite, onIncrement, onReset }) {
   const done = count >= item.target;
+  const formattedText = formatDhikrText(item.text);
 
   return (
     <article className="dhikr-card">
@@ -30,7 +48,10 @@ export default function DhikrCard({ item, count, isFavorite, onFavorite, onIncre
         </button>
       </div>
 
-      <p className="dhikr-text">{item.text}</p>
+      <div className="dhikr-text">
+        {formattedText.istiadhah && <span className="dhikr-istiadhah">{formattedText.istiadhah}</span>}
+        <p>{formattedText.body}</p>
+      </div>
 
       {item.note && (
         <div className="dhikr-note">
@@ -48,7 +69,7 @@ export default function DhikrCard({ item, count, isFavorite, onFavorite, onIncre
           {done ? <Check size={18} aria-hidden="true" /> : <MisbahaIcon />}
           {done ? "تم" : "تكرار"}
           <span className="button-count">
-            {Math.min(count, item.target)} / {item.target}
+            {Math.min(count, item.target)}/{item.target}
           </span>
         </button>
         <button className="reset-btn" type="button" onClick={onReset} aria-label="تصفير عداد الذكر">

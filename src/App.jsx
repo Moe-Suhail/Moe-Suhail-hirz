@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { BookOpen, Grid2X2, Heart, RotateCcw, Sparkles, Star, Sun, Undo2 } from "lucide-react";
+import { BookOpen, Heart, RotateCcw, Sparkles, Star, Sun, Undo2 } from "lucide-react";
 import DhikrCard from "./components/DhikrCard.jsx";
 import EmptyState from "./components/EmptyState.jsx";
 import Sidebar from "./components/Sidebar.jsx";
@@ -16,7 +16,7 @@ const views = {
 
 const BASMALA = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
 const ISTIADHA = "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ";
-const FEATURED_COLLECTIONS = ["morning", "evening", "after-prayer", "before-sleep"];
+const FEATURED_COLLECTIONS = ["morning", "evening"];
 
 function readStorage(key, fallback) {
   try {
@@ -235,6 +235,22 @@ export default function App() {
   }, [pageVerses, quranChapters]);
   const completedCount = dhikrItems.filter((item) => (counts[item.id] || 0) >= item.target).length;
   const progress = dhikrItems.length ? Math.round((completedCount / dhikrItems.length) * 100) : 0;
+  const morningItems = dhikrItems.filter((item) => item.collectionId === "morning");
+  const eveningItems = dhikrItems.filter((item) => item.collectionId === "evening");
+  const getProgressState = (items) => {
+    const completed = items.filter((item) => (counts[item.id] || 0) >= item.target).length;
+    return {
+      completed,
+      total: items.length,
+      percent: items.length ? Math.round((completed / items.length) * 100) : 0,
+      done: items.length > 0 && completed >= items.length
+    };
+  };
+  const morningProgress = getProgressState(morningItems);
+  const eveningProgress = getProgressState(eveningItems);
+  const dailyCoreTotal = morningProgress.total + eveningProgress.total;
+  const dailyCoreCompleted = morningProgress.completed + eveningProgress.completed;
+  const dailyCoreProgress = dailyCoreTotal ? Math.round((dailyCoreCompleted / dailyCoreTotal) * 100) : progress;
   const hasSearchQuery = searchTokens(query).length > 0;
 
   const filteredDhikr = useMemo(() => {
@@ -459,10 +475,22 @@ export default function App() {
               <p className="memorial-dua">ولجميع أموات المسلمين</p>
             </div>
             <div className="header-info-progress">
-              <span>ورد اليوم</span>
-              <strong>{progress}%</strong>
-              <div className="progress-track" aria-hidden="true">
-                <div style={{ width: `${progress}%` }} />
+              <div className="daily-progress-head">
+                <span>ورد اليوم</span>
+                <strong>{dailyCoreProgress}%</strong>
+              </div>
+              <div className="split-progress" aria-hidden="true">
+                <div className="split-progress-half morning">
+                  <span style={{ width: `${morningProgress.percent}%` }} />
+                </div>
+                <i className={morningProgress.done ? "done" : ""}>{morningProgress.done ? "✓" : ""}</i>
+                <div className="split-progress-half evening">
+                  <span style={{ width: `${eveningProgress.percent}%` }} />
+                </div>
+              </div>
+              <div className="daily-progress-labels">
+                <span>الصباح {morningProgress.percent}%</span>
+                <span>المساء {eveningProgress.percent}%</span>
               </div>
             </div>
           </div>
@@ -487,7 +515,6 @@ export default function App() {
                     </button>
                   ))}
                   <button className={`collection-card more-card ${showMoreCollections ? "active" : ""}`} type="button" onClick={() => setShowMoreCollections((current) => !current)}>
-                    <Grid2X2 size={22} aria-hidden="true" />
                     <strong>باقي الأذكار</strong>
                     <span>أدعية وتصنيفات أكثر</span>
                     <small>{formatDhikrCount(moreCategories.reduce((total, item) => total + item.count, 0))}</small>
@@ -529,15 +556,11 @@ export default function App() {
                 <EmptyState text={errors.dhikr} />
               ) : filteredDhikr.length ? (
                 <div className="dhikr-reader" onTouchStart={handleDhikrTouchStart} onTouchEnd={handleDhikrTouchEnd}>
-                  <div className="dhikr-live-progress" aria-label="تقدم القسم الحالي">
-                    <span>تقدم هذا الورد</span>
-                    <strong>{filteredProgress}%</strong>
-                    <div className="progress-track" aria-hidden="true">
-                      <div style={{ width: `${filteredProgress}%` }} />
-                    </div>
-                  </div>
                   <div className="dhikr-reader-meta">
                     <span>{activeDhikrIndex + 1} من {filteredDhikr.length}</span>
+                    <div className="section-progress" aria-label="تقدم القسم الحالي">
+                      <i style={{ width: `${filteredProgress}%` }} />
+                    </div>
                     <div className="dhikr-reader-dots" aria-hidden="true">
                       {filteredDhikr.slice(0, Math.min(filteredDhikr.length, 12)).map((item, index) => (
                         <span className={index === Math.min(activeDhikrIndex, 11) ? "active" : ""} key={item.id} />
@@ -696,16 +719,24 @@ export default function App() {
 
         <footer className="smart-footer" aria-label="معلومات حرز">
           <div className="smart-footer-progress">
-            <span>ورد اليوم</span>
-            <strong>{progress}%</strong>
-            <div className="progress-track" aria-hidden="true">
-              <div style={{ width: `${progress}%` }} />
+            <div className="daily-progress-head">
+              <span>ورد اليوم</span>
+              <strong>{dailyCoreProgress}%</strong>
+            </div>
+            <div className="split-progress" aria-hidden="true">
+              <div className="split-progress-half morning">
+                <span style={{ width: `${morningProgress.percent}%` }} />
+              </div>
+              <i className={morningProgress.done ? "done" : ""}>{morningProgress.done ? "✓" : ""}</i>
+              <div className="split-progress-half evening">
+                <span style={{ width: `${eveningProgress.percent}%` }} />
+              </div>
+            </div>
+            <div className="daily-progress-labels">
+              <span>الصباح {morningProgress.percent}%</span>
+              <span>المساء {eveningProgress.percent}%</span>
             </div>
           </div>
-
-          <button className="smart-footer-theme" type="button" onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}>
-            {theme === "dark" ? "الوضع النهاري" : "الوضع الليلي"}
-          </button>
 
           <div className="smart-footer-dedication">
             <span>صدقة جارية</span>
