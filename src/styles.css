@@ -3909,3 +3909,56 @@ svg {
     font-size: 25px;
   }
 }
+
+/* Final mobile polish: daily card alignment and calmer memorial typography */
+@media (max-width: 900px) {
+  .smart-footer-progress .daily-progress-head {
+    grid-template-columns: auto minmax(0, 1fr);
+    direction: ltr;
+  }
+
+  .smart-footer-progress .daily-progress-title {
+    grid-column: 2;
+    justify-self: end;
+    text-align: right;
+    direction: rtl;
+  }
+
+  .smart-footer-progress .daily-progress-score {
+    grid-column: 1;
+    justify-self: start;
+    text-align: left;
+    direction: ltr;
+  }
+
+  .smart-footer-dedication span {
+    font-size: 18px;
+  }
+
+  .smart-footer-dedication p {
+    font-size: 14px;
+  }
+
+  .smart-footer-dedication strong {
+    font-size: clamp(16px, 4.2vw, 19px);
+    line-height: 1.38;
+  }
+
+  .smart-footer-dedication .memorial-dua {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 520px) {
+  .smart-footer-dedication span {
+    font-size: 17px;
+  }
+
+  .smart-footer-dedication p {
+    font-size: 13.5px;
+  }
+
+  .smart-footer-dedication strong {
+    font-size: 17px;
+  }
+}
