@@ -114,8 +114,8 @@ export default function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem("hirz-theme") || "light");
   const [activeDhikrIndex, setActiveDhikrIndex] = useState(0);
   const [showMoreCollections, setShowMoreCollections] = useState(false);
-  const touchStartX = useRef(null);
-  const quranTouchStartX = useRef(null);
+  const touchStart = useRef(null);
+  const quranTouchStart = useRef(null);
   const quranPageCache = useRef(new Map());
 
   useEffect(() => {
@@ -390,18 +390,50 @@ export default function App() {
     setActiveDhikrIndex((current) => Math.max(current - 1, 0));
   }
 
+  function captureSwipeStart(event, ref, allowedSelector) {
+    const touch = event.touches[0];
+    const isAllowedArea = allowedSelector ? Boolean(event.target.closest?.(allowedSelector)) : true;
+    ref.current = touch
+      ? {
+          x: touch.clientX,
+          y: touch.clientY,
+          isAllowedArea,
+          startedOnControl: Boolean(event.target.closest?.("button, a, input, textarea, select"))
+        }
+      : null;
+  }
+
+  function readHorizontalSwipe(event, ref, threshold = 96) {
+    const start = ref.current;
+    ref.current = null;
+    if (!start || !start.isAllowedArea || start.startedOnControl) {
+      return 0;
+    }
+
+    const touch = event.changedTouches[0];
+    if (!touch) {
+      return 0;
+    }
+
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+    const absX = Math.abs(deltaX);
+    const absY = Math.abs(deltaY);
+
+    if (absX < threshold || absX < absY * 1.8 || absY > 64) {
+      return 0;
+    }
+
+    return deltaX;
+  }
+
   function handleDhikrTouchStart(event) {
-    touchStartX.current = event.touches[0]?.clientX ?? null;
+    captureSwipeStart(event, touchStart, ".dhikr-card");
   }
 
   function handleDhikrTouchEnd(event) {
-    if (touchStartX.current === null) {
-      return;
-    }
-    const endX = event.changedTouches[0]?.clientX ?? touchStartX.current;
-    const delta = endX - touchStartX.current;
-    touchStartX.current = null;
-    if (Math.abs(delta) < 46) {
+    const delta = readHorizontalSwipe(event, touchStart, 110);
+    if (!delta) {
       return;
     }
     if (delta > 0) {
@@ -420,17 +452,12 @@ export default function App() {
   }
 
   function handleQuranTouchStart(event) {
-    quranTouchStartX.current = event.touches[0]?.clientX ?? null;
+    captureSwipeStart(event, quranTouchStart, ".mushaf-text");
   }
 
   function handleQuranTouchEnd(event) {
-    if (quranTouchStartX.current === null) {
-      return;
-    }
-    const endX = event.changedTouches[0]?.clientX ?? quranTouchStartX.current;
-    const delta = endX - quranTouchStartX.current;
-    quranTouchStartX.current = null;
-    if (Math.abs(delta) < 54) {
+    const delta = readHorizontalSwipe(event, quranTouchStart, 120);
+    if (!delta) {
       return;
     }
     if (delta > 0) {
@@ -654,6 +681,11 @@ export default function App() {
                         </p>
                       </section>
                     ))}
+                  </div>
+                )}
+                {!loading.quran && !errors.quran && pageVerses.length > 0 && (
+                  <div className="mushaf-page-number" aria-label={`رقم الصفحة ${quranPage}`}>
+                    <span>{quranPage}</span>
                   </div>
                 )}
               </div>

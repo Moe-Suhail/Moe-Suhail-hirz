@@ -13,7 +13,7 @@
   --gold: #c7a75a;
   --rose: #a44758;
   --blue: #2d628f;
-  --glass: blur(20px) saturate(145%);
+  --glass: blur(24px) saturate(165%);
   --shadow: 0 18px 44px rgba(37, 54, 44, 0.1);
   --glass-card: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 251, 237, 0.36)), rgba(255, 255, 255, 0.42);
   --glass-border: rgba(255, 255, 255, 0.48);
@@ -358,15 +358,17 @@ svg {
   border: 1px solid rgba(255, 255, 255, 0.58);
   border-radius: 30px 30px 40px 40px;
   background:
+    linear-gradient(118deg, transparent 0 24%, rgba(255, 255, 255, 0.24) 38%, transparent 52%),
     radial-gradient(circle at 50% 37%, rgba(255, 255, 255, 0.82), transparent 27%),
-    radial-gradient(circle at 60% 30%, rgba(111, 148, 132, 0.22), transparent 38%),
-    radial-gradient(circle at 16% 12%, rgba(214, 183, 106, 0.18), transparent 24%),
-    linear-gradient(135deg, rgba(255, 252, 242, 0.94) 0%, rgba(247, 241, 224, 0.94) 48%, rgba(218, 226, 207, 0.88) 100%);
+    radial-gradient(circle at 60% 30%, rgba(111, 148, 132, 0.27), transparent 38%),
+    radial-gradient(circle at 16% 12%, rgba(214, 183, 106, 0.22), transparent 24%),
+    linear-gradient(135deg, rgba(255, 252, 242, 0.9) 0%, rgba(247, 241, 224, 0.9) 48%, rgba(218, 226, 207, 0.84) 100%);
   padding: 32px 34px;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    0 24px 60px rgba(39, 58, 47, 0.12),
-    0 4px 18px rgba(198, 161, 91, 0.06);
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    inset 0 -1px 0 rgba(199, 167, 90, 0.12),
+    0 28px 68px rgba(39, 58, 47, 0.14),
+    0 8px 24px rgba(198, 161, 91, 0.08);
   backdrop-filter: var(--glass);
   isolation: isolate;
   animation: heroIn 520ms ease both;
@@ -378,10 +380,11 @@ svg {
   inset: 0;
   z-index: 0;
   background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.04) 42%, transparent),
     radial-gradient(circle at 14% 18%, rgba(23, 76, 60, 0.09) 1px, transparent 1.4px),
     radial-gradient(circle at 86% 22%, rgba(199, 167, 90, 0.07) 1px, transparent 1.5px);
   background-size: 30px 30px, 38px 38px;
-  opacity: 0.18;
+  opacity: 0.26;
   pointer-events: none;
 }
 
@@ -642,13 +645,15 @@ svg {
 :root:not([data-theme="dark"]) .smart-footer-progress,
 :root:not([data-theme="dark"]) .smart-footer-theme,
 :root:not([data-theme="dark"]) .smart-footer-copyright {
-  border-color: rgba(255, 255, 255, 0.54);
+  border-color: rgba(255, 255, 255, 0.66);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 251, 238, 0.34)),
-    rgba(255, 255, 255, 0.38);
+    linear-gradient(118deg, transparent 0 24%, rgba(255, 255, 255, 0.28) 39%, transparent 54%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(255, 251, 238, 0.42)),
+    rgba(255, 255, 255, 0.46);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.62),
-    0 16px 38px rgba(37, 54, 44, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    inset 0 -1px 0 rgba(199, 167, 90, 0.08),
+    0 18px 44px rgba(37, 54, 44, 0.1);
 }
 
 .header-info-progress {
@@ -735,6 +740,7 @@ svg {
 
 :root[data-theme="dark"] .topbar {
   background:
+    linear-gradient(118deg, transparent 0 25%, rgba(255, 255, 255, 0.1) 40%, transparent 55%),
     radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.08), transparent 30%),
     radial-gradient(circle at 84% 20%, rgba(225, 189, 114, 0.16), transparent 28%),
     linear-gradient(135deg, rgba(34, 56, 49, 0.98), rgba(46, 75, 65, 0.96) 52%, rgba(84, 83, 54, 0.88));
@@ -832,6 +838,11 @@ svg {
 
 .smart-footer {
   display: none;
+}
+
+.smart-footer-copyright {
+  backdrop-filter: var(--glass);
+  -webkit-backdrop-filter: var(--glass);
 }
 
 .category-strip,
@@ -1583,6 +1594,8 @@ svg {
 }
 
 .mushaf-page {
+  display: flex;
+  flex-direction: column;
   min-height: 660px;
   border: 1px solid rgba(184, 145, 61, 0.3);
   border-radius: 8px;
@@ -1596,6 +1609,53 @@ svg {
   touch-action: pan-y;
 }
 
+.mushaf-text {
+  flex: 1;
+}
+
+.mushaf-page-number {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin: 28px auto 0;
+  border: 1px solid rgba(184, 145, 61, 0.5);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 35% 22%, rgba(255, 255, 255, 0.86), transparent 34%),
+    linear-gradient(145deg, rgba(255, 253, 245, 0.88), rgba(239, 224, 185, 0.4));
+  color: #8d7230;
+  font-family: "Amiri", "Amiri Quran", Calibri, serif;
+  font-size: 18px;
+  line-height: 1;
+  box-shadow:
+    inset 0 0 0 4px rgba(255, 255, 255, 0.42),
+    0 8px 20px rgba(184, 145, 61, 0.12);
+}
+
+.mushaf-page-number::before,
+.mushaf-page-number::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: min(24vw, 130px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(184, 145, 61, 0.42), transparent);
+}
+
+.mushaf-page-number::before {
+  right: calc(100% + 12px);
+}
+
+.mushaf-page-number::after {
+  left: calc(100% + 12px);
+}
+
+.mushaf-page-number span {
+  transform: translateY(-1px);
+}
+
 :root[data-theme="dark"] .mushaf-page {
   background:
     linear-gradient(135deg, rgba(45, 61, 54, 0.92), rgba(44, 42, 31, 0.92)),
@@ -1604,6 +1664,14 @@ svg {
 
 :root[data-theme="dark"] .mushaf-text {
   color: #f7fbf7;
+}
+
+:root[data-theme="dark"] .mushaf-page-number {
+  border-color: rgba(225, 189, 114, 0.42);
+  background:
+    radial-gradient(circle at 35% 22%, rgba(255, 255, 255, 0.16), transparent 36%),
+    linear-gradient(145deg, rgba(63, 89, 78, 0.92), rgba(87, 73, 42, 0.58));
+  color: #e1bd72;
 }
 
 :root[data-theme="dark"] .mushaf-opening h4,
@@ -1877,7 +1945,7 @@ svg {
     align-items: center;
     gap: 8px;
     border-radius: 24px 24px 32px 32px;
-    backdrop-filter: none;
+    backdrop-filter: var(--glass);
   }
 
   .hero-brand {
@@ -2047,6 +2115,12 @@ svg {
   .search-box,
   .header-theme-toggle {
     backdrop-filter: none;
+  }
+
+  .topbar,
+  .smart-footer-copyright {
+    backdrop-filter: var(--glass);
+    -webkit-backdrop-filter: var(--glass);
   }
 
   .dhikr-card::before,
