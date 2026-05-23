@@ -1,6 +1,8 @@
 import { surahMeta } from "../data";
+import { supplementalCollections, supplementalDuas } from "../supplementalDuas";
 
 const API_BASE = "https://api.islamic.app/v1";
+const QURAN_API_BASE = "https://api.quran.com/api/v4";
 
 export const dhikrCollections = [
   { id: "morning", label: "أذكار الصباح", description: "ورد بداية اليوم", shortcut: "morning" },
@@ -110,6 +112,14 @@ async function getJson(path) {
   return response.json();
 }
 
+async function getQuranJson(path) {
+  const response = await fetch(`${QURAN_API_BASE}${path}`);
+  if (!response.ok) {
+    throw new Error(`تعذر جلب بيانات المصحف من ${path}`);
+  }
+  return response.json();
+}
+
 function stripHtml(value = "") {
   return value
     .replace(/<br\s*\/?>/gi, "\n")
@@ -117,6 +127,16 @@ function stripHtml(value = "") {
     .replace(/&nbsp;/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function extractArabicReference(body = "", text = "") {
+  const cleanBody = stripHtml(body);
+  const cleanText = stripHtml(text);
+  if (!cleanBody || cleanBody === cleanText) {
+    return "";
+  }
+  const withoutText = cleanBody.replace(cleanText, "").replace(/\s+/g, " ").trim();
+  return withoutText || cleanBody;
 }
 
 function detectRepeat(text) {
@@ -142,9 +162,10 @@ function normalizeDua(dua, index = 0) {
   const categoryNumber = Number(dua.category?.number || 0);
   const duaKey = makeDuaKey(dua.number, index + 1);
   const duaNumber = Number.parseInt(String(dua.number || index + 1), 10) || index + 1;
-  const body = stripHtml(dua.ar?.body || dua.en?.body || "");
+  const rawBody = dua.ar?.body || dua.en?.body || "";
+  const body = stripHtml(rawBody);
   const text = stripHtml(dua.ar?.text || body || "");
-  const note = body && body !== text ? body : "";
+  const note = extractArabicReference(rawBody, text);
 
   return {
     id: `dhikr-${categoryNumber}-${duaKey}`,
@@ -211,6 +232,15 @@ export async function fetchAllDhikr() {
     items: dhulHijjahItems
   });
 
+  supplementalCollections.forEach((collection) => {
+    const items = supplementalDuas.filter((item) => item.collectionId === collection.id);
+    collections.push({
+      ...collection,
+      count: items.length,
+      items
+    });
+  });
+
   return {
     categories: collections.map(({ items, ...collection }) => collection),
     items: collections
@@ -268,22 +298,25 @@ function normalizeChapter(chapter) {
 }
 
 export async function fetchQuranChapters() {
-  const result = await getJson("/chapters");
+  const result = await getQuranJson("/chapters?language=ar");
   const chapters = result.chapters || result.data?.chapters || result.data || [];
   return chapters.map(normalizeChapter).sort((a, b) => a.number - b.number);
 }
 
 export async function fetchQuranPage(pageNumber) {
-  const result = await getJson(`/verses/by_page/${pageNumber}?words=false&fields=text_uthmani`);
+  const result = await getQuranJson(`/verses/by_page/${pageNumber}?words=false&fields=text_uthmani,page_number&per_page=50`);
   const verses = result.verses || result.data?.verses || result.ayahs || result.data?.ayahs || [];
 
   return verses.map((verse) => {
     const verseKey = verse.verse_key || verse.verseKey || verse.key || "";
-    const [surahNumber, ayahNumber] = verseKey.split(":").map(Number);
+    const [keySurahNumber, keyAyahNumber] = verseKey.split(":").map(Number);
+    const surahNumber = Number(verse.chapter_id || verse.chapterId || keySurahNumber);
+    const ayahNumber = Number(verse.verse_number || verse.verseNumber || keyAyahNumber);
     return {
       key: verseKey,
       surahNumber,
       ayahNumber,
+      pageNumber: Number(verse.page_number || verse.pageNumber || pageNumber),
       text: verse.text_uthmani || verse.text || verse.text_uthmani_simple || verse.verse_text || ""
     };
   }).filter((verse) => verse.key && verse.text);

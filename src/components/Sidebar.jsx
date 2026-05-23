@@ -9,7 +9,6 @@ export default function Sidebar({ views, activeView, progress, theme, onThemeTog
         <div>
           <h1>حِرْز</h1>
           <p>أذكار وقرآن</p>
-          <small>تصميم وتطوير محمد عادل حسن طه</small>
         </div>
       </div>
 

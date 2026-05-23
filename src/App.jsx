@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { BookOpen, Heart, RotateCcw, Sparkles, Star, Sun } from "lucide-react";
+import { BookOpen, Grid2X2, Heart, RotateCcw, Sparkles, Star, Sun, Undo2 } from "lucide-react";
 import DhikrCard from "./components/DhikrCard.jsx";
 import EmptyState from "./components/EmptyState.jsx";
 import Sidebar from "./components/Sidebar.jsx";
@@ -13,6 +13,10 @@ const views = {
   tasbeeh: { label: "السبحة", title: "ذكر مستمر وبسيط", icon: Sparkles },
   favorites: { label: "المفضلة", title: "محفوظات قريبة", icon: Heart }
 };
+
+const BASMALA = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ";
+const ISTIADHA = "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ";
+const FEATURED_COLLECTIONS = ["morning", "evening", "after-prayer", "before-sleep"];
 
 function readStorage(key, fallback) {
   try {
@@ -109,7 +113,9 @@ export default function App() {
   const [tasbeeh, setTasbeeh] = useState(0);
   const [theme, setTheme] = useState(() => localStorage.getItem("hirz-theme") || "light");
   const [activeDhikrIndex, setActiveDhikrIndex] = useState(0);
+  const [showMoreCollections, setShowMoreCollections] = useState(false);
   const touchStartX = useRef(null);
+  const quranTouchStartX = useRef(null);
   const quranPageCache = useRef(new Map());
 
   useEffect(() => {
@@ -209,6 +215,24 @@ export default function App() {
   }, [pageVerses, quranChapters, quranPage, selectedSurah]);
 
   const activeSurah = quranChapters.find((surah) => surah.id === selectedSurah) ?? quranChapters[0];
+  const quranPageSurahs = useMemo(() => {
+    return pageVerses.reduce((groups, ayah) => {
+      let group = groups.find((entry) => entry.surahNumber === ayah.surahNumber);
+      if (!group) {
+        const surah = quranChapters.find((entry) => entry.number === ayah.surahNumber);
+        group = {
+          surahNumber: ayah.surahNumber,
+          surahName: surah?.name || `سورة ${ayah.surahNumber}`,
+          showIstiadhah: ayah.surahNumber === 1 && ayah.ayahNumber === 1,
+          showBasmala: ayah.ayahNumber === 1 && ayah.surahNumber !== 1 && ayah.surahNumber !== 9,
+          ayahs: []
+        };
+        groups.push(group);
+      }
+      group.ayahs.push(ayah);
+      return groups;
+    }, []);
+  }, [pageVerses, quranChapters]);
   const completedCount = dhikrItems.filter((item) => (counts[item.id] || 0) >= item.target).length;
   const progress = dhikrItems.length ? Math.round((completedCount / dhikrItems.length) * 100) : 0;
   const hasSearchQuery = searchTokens(query).length > 0;
@@ -228,7 +252,17 @@ export default function App() {
     });
   }, [quranChapters, query]);
 
+  const featuredCategories = useMemo(() => {
+    return dhikrCategories.filter((item) => FEATURED_COLLECTIONS.includes(item.id));
+  }, [dhikrCategories]);
+
+  const moreCategories = useMemo(() => {
+    return dhikrCategories.filter((item) => !FEATURED_COLLECTIONS.includes(item.id));
+  }, [dhikrCategories]);
+
   const activeDhikrItem = filteredDhikr[activeDhikrIndex] || filteredDhikr[0];
+  const filteredCompletedCount = filteredDhikr.filter((item) => (counts[item.id] || 0) >= item.target).length;
+  const filteredProgress = filteredDhikr.length ? Math.round((filteredCompletedCount / filteredDhikr.length) * 100) : 0;
 
   useEffect(() => {
     setActiveDhikrIndex(0);
@@ -307,6 +341,18 @@ export default function App() {
     saveCounts(nextCounts);
   }
 
+  function restartCurrentDhikrFlow() {
+    const nextCounts = { ...counts };
+    filteredDhikr.forEach((item) => {
+      delete nextCounts[item.id];
+    });
+    saveCounts(nextCounts);
+    setActiveDhikrIndex(0);
+    window.requestAnimationFrame(() => {
+      document.querySelector(".dhikr-stack")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
   function updateTasbeeh(nextValue) {
     setTasbeeh(nextValue);
   }
@@ -343,9 +389,38 @@ export default function App() {
       return;
     }
     if (delta > 0) {
-      goToPreviousDhikr();
-    } else {
       goToNextDhikr();
+    } else {
+      goToPreviousDhikr();
+    }
+  }
+
+  function goToNextQuranPage() {
+    setQuranPage((page) => Math.min(604, page + 1));
+  }
+
+  function goToPreviousQuranPage() {
+    setQuranPage((page) => Math.max(1, page - 1));
+  }
+
+  function handleQuranTouchStart(event) {
+    quranTouchStartX.current = event.touches[0]?.clientX ?? null;
+  }
+
+  function handleQuranTouchEnd(event) {
+    if (quranTouchStartX.current === null) {
+      return;
+    }
+    const endX = event.changedTouches[0]?.clientX ?? quranTouchStartX.current;
+    const delta = endX - quranTouchStartX.current;
+    quranTouchStartX.current = null;
+    if (Math.abs(delta) < 54) {
+      return;
+    }
+    if (delta > 0) {
+      goToNextQuranPage();
+    } else {
+      goToPreviousQuranPage();
     }
   }
 
@@ -375,10 +450,13 @@ export default function App() {
         <section className="header-info-panel" aria-label="معلومات حرز">
           <div className="header-info-card">
             <div className="header-info-dedication">
-            <span>صدقة جارية لروح جدي و جدتي</span>
-            <strong>عبد الرحمن محمد احمد</strong>
-            <strong>ست النور محمد عثمان</strong>
-            <p>ولجميع أمواتنا وأموات المسلمين</p>
+              <span>صدقة جارية</span>
+              <p>لروح جدي وجدتي</p>
+              <div className="memorial-names">
+                <strong>عبد الرحمن محمد أحمد</strong>
+                <strong>ست النور محمد عثمان</strong>
+              </div>
+              <p className="memorial-dua">ولجميع أموات المسلمين</p>
             </div>
             <div className="header-info-progress">
               <span>ورد اليوم</span>
@@ -395,11 +473,12 @@ export default function App() {
             {dhikrCategories.length > 0 && (
               <div className="collection-panel">
                 <div className="collection-grid">
-                  {dhikrCategories.map((item) => (
+                  {featuredCategories.map((item) => (
                     <button
                       className={`collection-card ${category === item.id ? "active" : ""}`}
                       type="button"
                       key={item.id}
+                      aria-pressed={category === item.id}
                       onClick={() => setCategory(item.id)}
                     >
                       <strong>{item.label}</strong>
@@ -407,12 +486,42 @@ export default function App() {
                       <small>{formatDhikrCount(item.count)}</small>
                     </button>
                   ))}
+                  <button className={`collection-card more-card ${showMoreCollections ? "active" : ""}`} type="button" onClick={() => setShowMoreCollections((current) => !current)}>
+                    <Grid2X2 size={22} aria-hidden="true" />
+                    <strong>باقي الأذكار</strong>
+                    <span>أدعية وتصنيفات أكثر</span>
+                    <small>{formatDhikrCount(moreCategories.reduce((total, item) => total + item.count, 0))}</small>
+                  </button>
                 </div>
+                {showMoreCollections && (
+                  <div className="more-collections" aria-label="باقي الأذكار والأدعية">
+                    {moreCategories.map((item) => (
+                      <button
+                        className={`collection-card compact ${category === item.id ? "active" : ""}`}
+                        type="button"
+                        key={item.id}
+                        aria-pressed={category === item.id}
+                        onClick={() => setCategory(item.id)}
+                      >
+                        <strong>{item.label}</strong>
+                        <span>{item.description}</span>
+                        <small>{formatDhikrCount(item.count)}</small>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
             <div className="dhikr-stack">
               <div className="selected-collection-title">
-                <h3>{hasSearchQuery ? "نتائج البحث" : dhikrCategories.find((item) => item.id === category)?.label || "أذكار الصباح"}</h3>
+                <h3 key={hasSearchQuery ? "search" : category}>
+                  <span>القسم الحالي</span>
+                  {hasSearchQuery ? "نتائج البحث" : dhikrCategories.find((item) => item.id === category)?.label || "أذكار الصباح"}
+                </h3>
+                <button className="restart-flow-btn" type="button" onClick={restartCurrentDhikrFlow} disabled={!filteredDhikr.length}>
+                  <Undo2 size={17} aria-hidden="true" />
+                  إعادة البدء
+                </button>
               </div>
               {loading.dhikr ? (
                 <EmptyState text="جاري تحميل جميع الأذكار من المصدر..." />
@@ -420,6 +529,13 @@ export default function App() {
                 <EmptyState text={errors.dhikr} />
               ) : filteredDhikr.length ? (
                 <div className="dhikr-reader" onTouchStart={handleDhikrTouchStart} onTouchEnd={handleDhikrTouchEnd}>
+                  <div className="dhikr-live-progress" aria-label="تقدم القسم الحالي">
+                    <span>تقدم هذا الورد</span>
+                    <strong>{filteredProgress}%</strong>
+                    <div className="progress-track" aria-hidden="true">
+                      <div style={{ width: `${filteredProgress}%` }} />
+                    </div>
+                  </div>
                   <div className="dhikr-reader-meta">
                     <span>{activeDhikrIndex + 1} من {filteredDhikr.length}</span>
                     <div className="dhikr-reader-dots" aria-hidden="true">
@@ -487,7 +603,7 @@ export default function App() {
                   <Star size={20} fill="currentColor" />
                 </button>
               </div>
-              <div className="mushaf-page">
+              <div className="mushaf-page" onTouchStart={handleQuranTouchStart} onTouchEnd={handleQuranTouchEnd}>
                 {loading.quran ? (
                   <EmptyState text="جاري تحميل المصحف كاملًا من المصدر..." />
                 ) : errors.quran ? (
@@ -495,22 +611,35 @@ export default function App() {
                 ) : !pageVerses.length ? (
                   <EmptyState text="لم تظهر آيات هذه السورة بعد. أعد تحميل الصفحة أو تحقق من الاتصال." />
                 ) : (
-                  <p className="mushaf-text">
-                    {pageVerses.map((ayah) => (
-                      <span className="mushaf-ayah" key={ayah.key}>
-                        {ayah.text}
-                        <span className="mushaf-number">{ayah.ayahNumber}</span>
-                      </span>
+                  <div className="mushaf-text">
+                    {quranPageSurahs.map((section) => (
+                      <section className="mushaf-surah-section" key={`${quranPage}-${section.surahNumber}`}>
+                        {(section.showIstiadhah || section.showBasmala) && (
+                          <div className="mushaf-opening">
+                            <h4>{section.surahName}</h4>
+                            {section.showIstiadhah && <p className="mushaf-istiadhah">{ISTIADHA}</p>}
+                            {section.showBasmala && <p className="mushaf-basmala">{BASMALA}</p>}
+                          </div>
+                        )}
+                        <p>
+                          {section.ayahs.map((ayah) => (
+                            <span className="mushaf-ayah" key={ayah.key}>
+                              {ayah.text}
+                              <span className="mushaf-number">{ayah.ayahNumber}</span>
+                            </span>
+                          ))}
+                        </p>
+                      </section>
                     ))}
-                  </p>
+                  </div>
                 )}
               </div>
               <div className="page-controls">
-                <button className="ghost-btn" type="button" disabled={quranPage <= 1} onClick={() => setQuranPage((page) => Math.max(1, page - 1))}>
+                <button className="ghost-btn" type="button" disabled={quranPage <= 1} onClick={goToPreviousQuranPage}>
                   الصفحة السابقة
                 </button>
                 <strong>صفحة {quranPage} من 604</strong>
-                <button className="ghost-btn" type="button" disabled={quranPage >= 604} onClick={() => setQuranPage((page) => Math.min(604, page + 1))}>
+                <button className="ghost-btn" type="button" disabled={quranPage >= 604} onClick={goToNextQuranPage}>
                   الصفحة التالية
                 </button>
               </div>
@@ -579,13 +708,16 @@ export default function App() {
           </button>
 
           <div className="smart-footer-dedication">
-            <span>صدقة جارية لروح جدي و جدتي</span>
-            <strong>عبد الرحمن محمد احمد</strong>
-            <strong>ست النور محمد عثمان</strong>
-            <p>ولجميع أمواتنا وأموات المسلمين</p>
+            <span>صدقة جارية</span>
+            <p>لروح جدي وجدتي</p>
+            <div className="memorial-names">
+              <strong>عبد الرحمن محمد أحمد</strong>
+              <strong>ست النور محمد عثمان</strong>
+            </div>
+            <p className="memorial-dua">ولجميع أموات المسلمين</p>
           </div>
 
-          <p className="smart-footer-copyright">تصميم وتطوير محمد عادل حسن طه</p>
+          <p className="smart-footer-copyright">تصميم وتطوير: محمد عادل حسن طه</p>
         </footer>
       </main>
     </div>

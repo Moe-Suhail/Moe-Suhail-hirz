@@ -23,8 +23,6 @@ export default function Topbar({ label, title, query, searchPlaceholder, onQuery
         </div>
       </div>
 
-      <p className="hero-credit">تصميم وتطوير: محمد عادل حسن طه</p>
-
       <div className="header-actions">
         <button className="header-theme-toggle" type="button" onClick={onThemeToggle} aria-label="تبديل الوضع الليلي">
           <span className={theme === "light" ? "active" : ""}>

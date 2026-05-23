@@ -1,5 +1,22 @@
 import React from "react";
-import { Check, RotateCcw, Star, Target } from "lucide-react";
+import { Check, RotateCcw, Star } from "lucide-react";
+
+function MisbahaIcon() {
+  return (
+    <svg className="misbaha-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="5" r="2.1" />
+      <circle cx="16.8" cy="7.7" r="1.75" />
+      <circle cx="18.1" cy="13" r="1.75" />
+      <circle cx="14.2" cy="17" r="1.75" />
+      <circle cx="8.6" cy="16.6" r="1.75" />
+      <circle cx="5.5" cy="12" r="1.75" />
+      <circle cx="7.1" cy="7.4" r="1.75" />
+      <path d="M12 7.1v3.7" />
+      <path d="M12 17.8v2.2" />
+      <path d="M10 20h4" />
+    </svg>
+  );
+}
 
 export default function DhikrCard({ item, count, isFavorite, onFavorite, onIncrement, onReset }) {
   const done = count >= item.target;
@@ -15,7 +32,12 @@ export default function DhikrCard({ item, count, isFavorite, onFavorite, onIncre
 
       <p className="dhikr-text">{item.text}</p>
 
-      {item.note && <p className="dhikr-note">{item.note}</p>}
+      {item.note && (
+        <div className="dhikr-note">
+          <span>فضل أو حديث مرتبط</span>
+          <p>{item.note}</p>
+        </div>
+      )}
 
       <div className="note-row">
         <span>{item.target > 1 ? `يكرر ${item.target} مرات` : "مرة واحدة"}</span>
@@ -23,7 +45,7 @@ export default function DhikrCard({ item, count, isFavorite, onFavorite, onIncre
 
       <div className="dhikr-actions">
         <button className={done ? "done-btn" : "primary-btn"} type="button" onClick={onIncrement}>
-          {done ? <Check size={18} aria-hidden="true" /> : <Target size={18} aria-hidden="true" />}
+          {done ? <Check size={18} aria-hidden="true" /> : <MisbahaIcon />}
           {done ? "تم" : "تكرار"}
           <span className="button-count">
             {Math.min(count, item.target)} / {item.target}
