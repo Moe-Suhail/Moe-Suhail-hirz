@@ -166,6 +166,254 @@ const afterPrayerItems = [
   }
 ];
 
+function makeVerifiedDhikrItems(collectionId, collectionLabel, categoryNumber, collectionOrder, items) {
+  return items.map((item, index) => ({
+    id: `${collectionId}-${item.id}`,
+    category: collectionLabel,
+    categoryNumber,
+    duaNumber: index + 1,
+    order: index + 1,
+    text: item.text,
+    note: item.note || "",
+    source: item.source || "حصن المسلم",
+    target: item.target,
+    kind: "dhikr",
+    collectionId,
+    collectionLabel,
+    collectionOrder
+  }));
+}
+
+const morningItems = makeVerifiedDhikrItems("morning", "أذكار الصباح", 1, 1, [
+  {
+    id: "opening",
+    text: "الحمد لله وحده، والصلاة والسلام على من لا نبي بعده",
+    target: 1,
+    note: "افتتاح أذكار الصباح كما أورده حصن المسلم."
+  },
+  {
+    id: "ayat-kursi",
+    text: "اللَّهُ لا إِلَهَ إِلا هُوَ الْحَيُّ الْقَيُّومُ، لا تَأْخُذُهُ سِنَةٌ وَلا نَوْمٌ، لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ، مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلا بِإِذْنِهِ، يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ، وَلا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلا بِمَا شَاءَ، وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ، وَلا يَئُودُهُ حِفْظُهُمَا، وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+    target: 1,
+    source: "آية الكرسي، سورة البقرة: 255"
+  },
+  {
+    id: "ikhlas",
+    text: "قُلْ هُوَ اللَّهُ أَحَدٌ، اللَّهُ الصَّمَدُ، لَمْ يَلِدْ وَلَمْ يُولَدْ، وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ",
+    target: 3,
+    source: "سورة الإخلاص، حصن المسلم"
+  },
+  {
+    id: "falaq",
+    text: "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ، مِنْ شَرِّ مَا خَلَقَ، وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ، وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ، وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+    target: 3,
+    source: "سورة الفلق، حصن المسلم"
+  },
+  {
+    id: "nas",
+    text: "قُلْ أَعُوذُ بِرَبِّ النَّاسِ، مَلِكِ النَّاسِ، إِلَهِ النَّاسِ، مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ، الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ، مِنَ الْجِنَّةِ وَالنَّاسِ",
+    target: 3,
+    source: "سورة الناس، حصن المسلم"
+  },
+  {
+    id: "asbahna-mulk",
+    text: "أصبحنا وأصبح الملك لله، والحمد لله، لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير. رب أسألك خير ما في هذا اليوم وخير ما بعده، وأعوذ بك من شر ما في هذا اليوم وشر ما بعده، رب أعوذ بك من الكسل وسوء الكبر، رب أعوذ بك من عذاب في النار وعذاب في القبر",
+    target: 1,
+    source: "صحيح مسلم"
+  },
+  {
+    id: "bika-asbahna",
+    text: "اللهم بك أصبحنا، وبك أمسينا، وبك نحيا، وبك نموت، وإليك النشور",
+    target: 1,
+    source: "سنن الترمذي"
+  },
+  {
+    id: "sayyid-istighfar",
+    text: "اللهم أنت ربي لا إله إلا أنت، خلقتني وأنا عبدك، وأنا على عهدك ووعدك ما استطعت، أعوذ بك من شر ما صنعت، أبوء لك بنعمتك علي، وأبوء بذنبي، فاغفر لي، فإنه لا يغفر الذنوب إلا أنت",
+    target: 1,
+    source: "صحيح البخاري",
+    note: "سيد الاستغفار."
+  },
+  {
+    id: "ashhaduka",
+    text: "اللهم إني أصبحت أشهدك، وأشهد حملة عرشك، وملائكتك، وجميع خلقك، أنك أنت الله لا إله إلا أنت وحدك لا شريك لك، وأن محمدًا عبدك ورسولك",
+    target: 4,
+    source: "سنن أبي داود"
+  },
+  {
+    id: "nimah",
+    text: "اللهم ما أصبح بي من نعمة أو بأحد من خلقك فمنك وحدك لا شريك لك، فلك الحمد ولك الشكر",
+    target: 1,
+    source: "سنن أبي داود"
+  },
+  {
+    id: "hasbiyallah",
+    text: "حسبي الله لا إله إلا هو، عليه توكلت، وهو رب العرش العظيم",
+    target: 7,
+    source: "سنن أبي داود"
+  },
+  {
+    id: "bismillah",
+    text: "بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء، وهو السميع العليم",
+    target: 3,
+    source: "سنن أبي داود والترمذي"
+  },
+  {
+    id: "raditu",
+    text: "رضيت بالله ربًا، وبالإسلام دينًا، وبمحمد صلى الله عليه وسلم نبيًا",
+    target: 3,
+    source: "سنن أبي داود والترمذي"
+  },
+  {
+    id: "hayy-qayyum",
+    text: "يا حي يا قيوم، برحمتك أستغيث، أصلح لي شأني كله، ولا تكلني إلى نفسي طرفة عين",
+    target: 1,
+    source: "النسائي في عمل اليوم والليلة"
+  },
+  {
+    id: "fitrah",
+    text: "أصبحنا على فطرة الإسلام، وعلى كلمة الإخلاص، وعلى دين نبينا محمد صلى الله عليه وسلم، وعلى ملة أبينا إبراهيم حنيفًا مسلمًا وما كان من المشركين",
+    target: 1,
+    source: "مسند أحمد"
+  },
+  {
+    id: "subhanallah-bihamdih",
+    text: "سبحان الله وبحمده",
+    target: 100,
+    source: "صحيح مسلم"
+  },
+  {
+    id: "tahleel",
+    text: "لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير",
+    target: 100,
+    source: "صحيح البخاري وصحيح مسلم"
+  },
+  {
+    id: "created-count",
+    text: "سبحان الله وبحمده، عدد خلقه، ورضا نفسه، وزنة عرشه، ومداد كلماته",
+    target: 3,
+    source: "صحيح مسلم"
+  },
+  {
+    id: "rizq-ilm",
+    text: "اللهم إني أسألك علمًا نافعًا، ورزقًا طيبًا، وعملًا متقبلًا",
+    target: 1,
+    source: "سنن ابن ماجه"
+  }
+]);
+
+const eveningItems = makeVerifiedDhikrItems("evening", "أذكار المساء", 2, 2, [
+  {
+    id: "opening",
+    text: "الحمد لله وحده، والصلاة والسلام على من لا نبي بعده",
+    target: 1,
+    note: "افتتاح أذكار المساء كما أورده حصن المسلم."
+  },
+  {
+    id: "ayat-kursi",
+    text: "اللَّهُ لا إِلَهَ إِلا هُوَ الْحَيُّ الْقَيُّومُ، لا تَأْخُذُهُ سِنَةٌ وَلا نَوْمٌ، لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ، مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلا بِإِذْنِهِ، يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ، وَلا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلا بِمَا شَاءَ، وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ، وَلا يَئُودُهُ حِفْظُهُمَا، وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+    target: 1,
+    source: "آية الكرسي، سورة البقرة: 255"
+  },
+  {
+    id: "ikhlas",
+    text: "قُلْ هُوَ اللَّهُ أَحَدٌ، اللَّهُ الصَّمَدُ، لَمْ يَلِدْ وَلَمْ يُولَدْ، وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ",
+    target: 3,
+    source: "سورة الإخلاص، حصن المسلم"
+  },
+  {
+    id: "falaq",
+    text: "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ، مِنْ شَرِّ مَا خَلَقَ، وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ، وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ، وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+    target: 3,
+    source: "سورة الفلق، حصن المسلم"
+  },
+  {
+    id: "nas",
+    text: "قُلْ أَعُوذُ بِرَبِّ النَّاسِ، مَلِكِ النَّاسِ، إِلَهِ النَّاسِ، مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ، الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ، مِنَ الْجِنَّةِ وَالنَّاسِ",
+    target: 3,
+    source: "سورة الناس، حصن المسلم"
+  },
+  {
+    id: "amsayna-mulk",
+    text: "أمسينا وأمسى الملك لله، والحمد لله، لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير. رب أسألك خير ما في هذه الليلة وخير ما بعدها، وأعوذ بك من شر ما في هذه الليلة وشر ما بعدها، رب أعوذ بك من الكسل وسوء الكبر، رب أعوذ بك من عذاب في النار وعذاب في القبر",
+    target: 1,
+    source: "صحيح مسلم"
+  },
+  {
+    id: "bika-amsayna",
+    text: "اللهم بك أمسينا، وبك أصبحنا، وبك نحيا، وبك نموت، وإليك المصير",
+    target: 1,
+    source: "سنن الترمذي"
+  },
+  {
+    id: "sayyid-istighfar",
+    text: "اللهم أنت ربي لا إله إلا أنت، خلقتني وأنا عبدك، وأنا على عهدك ووعدك ما استطعت، أعوذ بك من شر ما صنعت، أبوء لك بنعمتك علي، وأبوء بذنبي، فاغفر لي، فإنه لا يغفر الذنوب إلا أنت",
+    target: 1,
+    source: "صحيح البخاري",
+    note: "سيد الاستغفار."
+  },
+  {
+    id: "ashhaduka",
+    text: "اللهم إني أمسيت أشهدك، وأشهد حملة عرشك، وملائكتك، وجميع خلقك، أنك أنت الله لا إله إلا أنت وحدك لا شريك لك، وأن محمدًا عبدك ورسولك",
+    target: 4,
+    source: "سنن أبي داود"
+  },
+  {
+    id: "nimah",
+    text: "اللهم ما أمسى بي من نعمة أو بأحد من خلقك فمنك وحدك لا شريك لك، فلك الحمد ولك الشكر",
+    target: 1,
+    source: "سنن أبي داود"
+  },
+  {
+    id: "hasbiyallah",
+    text: "حسبي الله لا إله إلا هو، عليه توكلت، وهو رب العرش العظيم",
+    target: 7,
+    source: "سنن أبي داود"
+  },
+  {
+    id: "bismillah",
+    text: "بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء، وهو السميع العليم",
+    target: 3,
+    source: "سنن أبي داود والترمذي"
+  },
+  {
+    id: "raditu",
+    text: "رضيت بالله ربًا، وبالإسلام دينًا، وبمحمد صلى الله عليه وسلم نبيًا",
+    target: 3,
+    source: "سنن أبي داود والترمذي"
+  },
+  {
+    id: "hayy-qayyum",
+    text: "يا حي يا قيوم، برحمتك أستغيث، أصلح لي شأني كله، ولا تكلني إلى نفسي طرفة عين",
+    target: 1,
+    source: "النسائي في عمل اليوم والليلة"
+  },
+  {
+    id: "fitrah",
+    text: "أمسينا على فطرة الإسلام، وعلى كلمة الإخلاص، وعلى دين نبينا محمد صلى الله عليه وسلم، وعلى ملة أبينا إبراهيم حنيفًا مسلمًا وما كان من المشركين",
+    target: 1,
+    source: "مسند أحمد"
+  },
+  {
+    id: "subhanallah-bihamdih",
+    text: "سبحان الله وبحمده",
+    target: 100,
+    source: "صحيح مسلم"
+  },
+  {
+    id: "tahleel",
+    text: "لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير",
+    target: 100,
+    source: "صحيح البخاري وصحيح مسلم"
+  },
+  {
+    id: "kalimat",
+    text: "أعوذ بكلمات الله التامات من شر ما خلق",
+    target: 3,
+    source: "صحيح مسلم"
+  }
+]);
+
 const repeatWords = [
   ["مائة", 100],
   ["مئه", 100],
@@ -321,29 +569,44 @@ function applyEveningWording(item) {
 }
 
 export async function fetchAllDhikr() {
-  const apiCollections = dhikrCollections.filter((collection) => collection.shortcut);
+  const fixedCollectionItems = {
+    morning: morningItems,
+    evening: eveningItems,
+    "after-prayer": afterPrayerItems
+  };
+  const apiCollections = dhikrCollections.filter((collection) => collection.shortcut && !fixedCollectionItems[collection.id]);
   const responses = await Promise.allSettled(apiCollections.map((collection) => getJson(`/dhikr/${collection.shortcut}`)));
 
-  const collections = responses.map((result, index) => {
+  const fixedCollections = dhikrCollections
+    .filter((collection) => fixedCollectionItems[collection.id])
+    .map((collection) => ({
+      ...collection,
+      count: fixedCollectionItems[collection.id].length,
+      items: fixedCollectionItems[collection.id]
+    }));
+
+  const remoteCollections = responses.map((result, index) => {
     const collection = apiCollections[index];
-    if (collection.id === "after-prayer") {
-      return { ...collection, count: afterPrayerItems.length, items: afterPrayerItems };
-    }
     if (result.status !== "fulfilled") {
       return { ...collection, count: 0, items: [] };
     }
+    const collectionOrder = dhikrCollections.findIndex((entry) => entry.id === collection.id) + 1;
     const items = (result.value.data?.duas || []).map((dua, duaIndex) => {
       const normalized = normalizeDua(dua, duaIndex);
       return normalizeCollectionKind(collection.id, {
         ...normalized,
         id: `${collection.id}-${normalized.id}`,
-        collectionOrder: index + 1,
+        collectionOrder,
         category: collection.label,
         collectionId: collection.id,
         collectionLabel: collection.label
       });
-    }).map((item) => (collection.id === "evening" ? applyEveningWording(item) : item));
+    });
     return { ...collection, count: items.length, items };
+  });
+
+  const collections = [...fixedCollections, ...remoteCollections].sort((a, b) => {
+    return dhikrCollections.findIndex((entry) => entry.id === a.id) - dhikrCollections.findIndex((entry) => entry.id === b.id);
   });
 
   collections.push({
