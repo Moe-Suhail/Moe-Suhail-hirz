@@ -1415,6 +1415,13 @@ svg {
 .dhikr-card {
   background: var(--warm-glass);
   width: 100%;
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  min-height: clamp(500px, 62svh, 640px);
+  max-height: clamp(500px, 68svh, 680px);
+}
+
+.dhikr-card.guidance-card {
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
 }
 
 .dhikr-card:hover,
@@ -1468,6 +1475,11 @@ svg {
 .dhikr-text {
   display: grid;
   gap: 10px;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding-inline-end: 4px;
+  scrollbar-width: thin;
 }
 
 .dhikr-text p {
@@ -1496,6 +1508,10 @@ svg {
     linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 250, 239, 0.28)),
     rgba(255, 250, 239, 0.36);
   border-radius: 10px;
+  max-height: 148px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
 
 .dhikr-note span {
@@ -1510,6 +1526,63 @@ svg {
 
 .note-row {
   color: var(--muted);
+  min-height: 24px;
+  align-items: center;
+}
+
+.repeat-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 28px;
+  border: 1px solid rgba(199, 167, 90, 0.24);
+  border-radius: 999px;
+  background: rgba(255, 250, 239, 0.54);
+  color: var(--gold);
+  font-weight: 900;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.all-adhkar-card {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  border: 1px solid rgba(199, 167, 90, 0.28);
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.64), rgba(255, 249, 232, 0.44)),
+    rgba(255, 255, 255, 0.4);
+  color: var(--ink);
+  padding: 14px 18px;
+  text-align: right;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.64),
+    0 16px 32px rgba(37, 54, 44, 0.08);
+  backdrop-filter: blur(16px) saturate(140%);
+}
+
+.all-adhkar-card strong {
+  color: var(--accent-deep);
+  font-size: 18px;
+}
+
+.all-adhkar-card span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.all-adhkar-drawer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(119, 148, 131, 0.18);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.34);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(14px) saturate(140%);
 }
 
 .primary-btn,
@@ -3024,18 +3097,18 @@ svg {
   .smart-footer-dedication::before {
     content: "";
     position: absolute;
-    inset-inline-start: -32px;
-    inset-block-end: -38px;
-    width: 132px;
-    height: 132px;
+    inset-inline-start: 14px;
+    inset-block-end: 16px;
+    width: 92px;
+    height: 74px;
     pointer-events: none;
     opacity: 0.2;
     background:
-      radial-gradient(circle at 50% 50%, transparent 0 24%, rgba(199, 167, 90, 0.5) 25% 26%, transparent 27%),
-      repeating-conic-gradient(from 45deg, rgba(23, 76, 60, 0.42) 0 8deg, transparent 8deg 16deg);
-    border-radius: 50%;
-    mask-image: radial-gradient(circle, #000 0 58%, transparent 59%);
-    -webkit-mask-image: radial-gradient(circle, #000 0 58%, transparent 59%);
+      radial-gradient(ellipse at 28% 55%, rgba(23, 76, 60, 0.52) 0 18%, transparent 19%),
+      radial-gradient(ellipse at 48% 36%, rgba(199, 167, 90, 0.52) 0 15%, transparent 16%),
+      radial-gradient(ellipse at 66% 58%, rgba(23, 76, 60, 0.42) 0 17%, transparent 18%),
+      linear-gradient(24deg, transparent 46%, rgba(199, 167, 90, 0.52) 47% 50%, transparent 51%);
+    transform: rotate(-9deg);
   }
 
   .smart-footer-dedication::after {
@@ -3069,18 +3142,18 @@ svg {
 
   .smart-footer-dedication p {
     color: var(--muted);
-    font-size: 18px;
+    font-size: 15px;
   }
 
   .smart-footer-dedication strong {
     color: var(--ink);
-    font-size: clamp(21px, 5.2vw, 25px);
-    line-height: 1.45;
+    font-size: clamp(17px, 4.2vw, 20px);
+    line-height: 1.34;
     white-space: nowrap;
   }
 
   .smart-footer-dedication span {
-    font-size: 22px;
+    font-size: 18px;
     line-height: 1.2;
   }
 
@@ -3094,7 +3167,7 @@ svg {
 
   .smart-footer-dedication .memorial-dua {
     margin-top: 3px;
-    font-size: 19px;
+    font-size: 16px;
   }
 
   .smart-footer-copyright {
@@ -3153,6 +3226,16 @@ svg {
   .dhikr-text,
   .ayah-text {
     font-size: 19px;
+  }
+
+  .dhikr-card {
+    min-height: min(62svh, 560px);
+    max-height: min(68svh, 620px);
+  }
+
+  .dhikr-note {
+    max-height: 122px;
+    font-size: 13.5px;
   }
 
   .collection-grid {
@@ -3801,7 +3884,8 @@ svg {
   }
 
   .content.dhikr-focus .dhikr-card {
-    min-height: min(58svh, 540px);
+    min-height: min(60svh, 560px);
+    max-height: min(66svh, 620px);
   }
 
   .content.dhikr-focus .dhikr-reader-controls {
@@ -3932,25 +4016,25 @@ svg {
   }
 
   .smart-footer-dedication span {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .smart-footer-dedication p {
-    font-size: 12.8px;
+    font-size: 11.8px;
   }
 
   .smart-footer-dedication strong {
-    font-size: clamp(14.5px, 3.8vw, 17px);
+    font-size: clamp(13.6px, 3.6vw, 15.8px);
     line-height: 1.34;
   }
 
   .smart-footer-dedication .memorial-dua {
-    font-size: 13.5px;
+    font-size: 12.6px;
   }
 
   .smart-footer-dedication {
     gap: 4px;
-    padding: 14px 14px 15px;
+    padding: 12px 13px 13px;
     border-radius: 20px;
   }
 
@@ -3963,14 +4047,14 @@ svg {
 
 @media (max-width: 520px) {
   .smart-footer-dedication span {
-    font-size: 15.5px;
+    font-size: 14.6px;
   }
 
   .smart-footer-dedication p {
-    font-size: 12.5px;
+    font-size: 11.4px;
   }
 
   .smart-footer-dedication strong {
-    font-size: 15.8px;
+    font-size: 14.4px;
   }
 }
