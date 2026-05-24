@@ -111,6 +111,14 @@ function toWesternNumber(value, fallback = 1) {
   return Number(normalized) || fallback;
 }
 
+function parseStrictNumber(value) {
+  const normalized = String(value ?? "")
+    .trim()
+    .replace(/[٠-٩]/g, (digit) => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
+    .replace(/[۰-۹]/g, (digit) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)));
+  return /^\d+$/.test(normalized) ? Number(normalized) : null;
+}
+
 function searchTokens(value) {
   return normalize(value)
     .split(" ")
@@ -140,8 +148,23 @@ function formatDhikrCount(count) {
   return `${count} ذكر`;
 }
 
+function formatCategoryCount(category) {
+  if (["istikhara", "rain-thunder", "distress", "ease", "extra-protection"].includes(category.id)) {
+    return category.count === 1 ? "دعاء واحد" : `${category.count} أدعية`;
+  }
+  if (["dhul-hijjah", "forgiveness"].includes(category.id)) {
+    return category.count === 1 ? "نص واحد" : `${category.count} نصوص`;
+  }
+  return formatDhikrCount(category.count);
+}
+
 function formatJuzName(juzNumber) {
   return JUZ_NAMES[juzNumber - 1] ? `الجزء ${JUZ_NAMES[juzNumber - 1]}` : "الجزء";
+}
+
+function isCountableDhikr(item) {
+  const target = Number(item?.target);
+  return Number.isFinite(target) && target > 0 && item?.kind !== "guidance" && item?.kind !== "dua";
 }
 
 export default function App() {
@@ -180,6 +203,7 @@ export default function App() {
   const [dhikrMotion, setDhikrMotion] = useState("idle");
   const touchStart = useRef(null);
   const quranTouchStart = useRef(null);
+  const quranIndexTouchStart = useRef(null);
   const quranPageCache = useRef(new Map());
   const collectionRefs = useRef(new Map());
   const dhikrMotionTimeout = useRef(null);
@@ -367,17 +391,19 @@ export default function App() {
   }, [pageVerses, quranChapters]);
   const activePageSurah = quranPageSurahs[0]?.surahName || activeSurah.name;
   const activePageJuz = pageVerses[0]?.juzNumber || 1;
-  const completedCount = dhikrItems.filter((item) => (counts[item.id] || 0) >= item.target).length;
-  const progress = dhikrItems.length ? Math.round((completedCount / dhikrItems.length) * 100) : 0;
+  const countableDhikrItems = dhikrItems.filter(isCountableDhikr);
+  const completedCount = countableDhikrItems.filter((item) => (counts[item.id] || 0) >= Number(item.target)).length;
+  const progress = countableDhikrItems.length ? Math.round((completedCount / countableDhikrItems.length) * 100) : 0;
   const morningItems = dhikrItems.filter((item) => item.collectionId === "morning");
   const eveningItems = dhikrItems.filter((item) => item.collectionId === "evening");
   const getProgressState = (items) => {
-    const completed = items.filter((item) => (counts[item.id] || 0) >= item.target).length;
+    const countableItems = items.filter(isCountableDhikr);
+    const completed = countableItems.filter((item) => (counts[item.id] || 0) >= Number(item.target)).length;
     return {
       completed,
-      total: items.length,
-      percent: items.length ? Math.round((completed / items.length) * 100) : 0,
-      done: items.length > 0 && completed >= items.length
+      total: countableItems.length,
+      percent: countableItems.length ? Math.round((completed / countableItems.length) * 100) : 0,
+      done: countableItems.length > 0 && completed >= countableItems.length
     };
   };
   const morningProgress = getProgressState(morningItems);
@@ -397,13 +423,21 @@ export default function App() {
   }, [category, dhikrCategories, dhikrItems, hasSearchQuery, query]);
 
   const filteredSurahs = useMemo(() => {
+    const numericQuery = parseStrictNumber(query);
     return quranChapters.filter((surah) => {
+      if (numericQuery) {
+        return surah.number === numericQuery;
+      }
       return semanticMatch(`${surah.name} ${surah.meta} ${surah.number}`, query);
     });
   }, [quranChapters, query]);
 
   const quranIndexSurahs = useMemo(() => {
+    const numericQuery = parseStrictNumber(quranIndexQuery);
     return quranChapters.filter((surah) => {
+      if (numericQuery) {
+        return surah.number === numericQuery;
+      }
       const queryText = `${surah.number} ${surah.name} ${surah.revelation} ${surah.versesCount}`;
       return semanticMatch(queryText, quranIndexQuery);
     });
@@ -446,8 +480,9 @@ export default function App() {
   }, [featuredCategories, moreCategories]);
 
   const activeDhikrItem = filteredDhikr[activeDhikrIndex] || filteredDhikr[0];
-  const filteredCompletedCount = filteredDhikr.filter((item) => (counts[item.id] || 0) >= item.target).length;
-  const filteredProgress = filteredDhikr.length ? Math.round((filteredCompletedCount / filteredDhikr.length) * 100) : 0;
+  const filteredCountableDhikr = filteredDhikr.filter(isCountableDhikr);
+  const filteredCompletedCount = filteredCountableDhikr.filter((item) => (counts[item.id] || 0) >= Number(item.target)).length;
+  const filteredProgress = filteredCountableDhikr.length ? Math.round((filteredCompletedCount / filteredCountableDhikr.length) * 100) : 0;
 
   useEffect(() => {
     const storedIndex = hasSearchQuery ? 0 : Number(readStorage(`hirz-dhikr-index-${category}`, 0)) || 0;
@@ -491,7 +526,7 @@ export default function App() {
   }, [dhikrItems, favorites, quranChapters]);
 
   useEffect(() => {
-    const validIds = new Set(dhikrItems.map((item) => item.id));
+    const validIds = new Set(dhikrItems.filter(isCountableDhikr).map((item) => item.id));
     if (!validIds.size) {
       return;
     }
@@ -670,13 +705,17 @@ export default function App() {
   }
 
   function incrementDhikr(item) {
+    if (!isCountableDhikr(item)) {
+      return;
+    }
+    const target = Number(item.target);
     const currentCount = counts[item.id] || 0;
-    const nextCount = Math.min(currentCount + 1, item.target);
+    const nextCount = Math.min(currentCount + 1, target);
     saveCounts({
       ...counts,
       [item.id]: nextCount
     });
-    if (currentCount < item.target && nextCount >= item.target) {
+    if (currentCount < target && nextCount >= target) {
       window.setTimeout(() => goToNextDhikr(), 260);
     }
   }
@@ -689,7 +728,7 @@ export default function App() {
 
   function restartCurrentDhikrFlow() {
     const nextCounts = { ...counts };
-    filteredDhikr.forEach((item) => {
+    filteredDhikr.filter(isCountableDhikr).forEach((item) => {
       delete nextCounts[item.id];
     });
     saveCounts(nextCounts);
@@ -805,6 +844,32 @@ export default function App() {
     }
   }
 
+  function handleQuranIndexTouchStart(event) {
+    const body = event.currentTarget.querySelector(".quran-index-body");
+    const touch = event.touches[0];
+    quranIndexTouchStart.current = touch
+      ? {
+          x: touch.clientX,
+          y: touch.clientY,
+          atTop: !body || body.scrollTop <= 2
+        }
+      : null;
+  }
+
+  function handleQuranIndexTouchEnd(event) {
+    const start = quranIndexTouchStart.current;
+    quranIndexTouchStart.current = null;
+    const touch = event.changedTouches[0];
+    if (!start || !touch || !start.atTop) {
+      return;
+    }
+    const deltaY = touch.clientY - start.y;
+    const deltaX = Math.abs(touch.clientX - start.x);
+    if (deltaY > 86 && deltaX < 70) {
+      setQuranIndexOpen(false);
+    }
+  }
+
   function changeView(nextView) {
     if (nextView !== activeViewRef.current) {
       rememberNavigationStep();
@@ -905,13 +970,13 @@ export default function App() {
                     >
                       <strong>{item.label}</strong>
                       <span>{item.description}</span>
-                      <small>{formatDhikrCount(item.count)}</small>
+                      <small>{formatCategoryCount(item)}</small>
                     </button>
                   ))}
                   <button className={`collection-card more-card ${showMoreCollections ? "active" : ""}`} type="button" onClick={() => setShowMoreCollections((current) => !current)}>
                     <strong>باقي الأذكار</strong>
                     <span>أدعية وتصنيفات أكثر</span>
-                    <small>{formatDhikrCount(moreCategories.reduce((total, item) => total + item.count, 0))}</small>
+                    <small>{moreCategories.reduce((total, item) => total + item.count, 0)} عنصر</small>
                   </button>
                 </div>
                 {showMoreCollections && (
@@ -933,14 +998,39 @@ export default function App() {
                       >
                         <strong>{item.label}</strong>
                         <span>{item.description}</span>
-                        <small>{formatDhikrCount(item.count)}</small>
+                        <small>{formatCategoryCount(item)}</small>
                       </button>
                     ))}
                   </div>
                 )}
               </div>
             )}
+            {activeView === "adhkar" && (
             <div className="dhikr-stack">
+              <button className="all-adhkar-card" type="button" onClick={() => setShowMoreCollections((current) => !current)}>
+                <strong>جميع الأذكار</strong>
+                <span>اختر القسم المناسب لك وانتقل بسرعة</span>
+              </button>
+              {showMoreCollections && (
+                <div className="all-adhkar-drawer" aria-label="فهرس جميع الأذكار">
+                  {orderedDhikrCategories.map((item) => (
+                    <button
+                      className={`collection-card compact ${category === item.id ? "active" : ""}`}
+                      type="button"
+                      key={item.id}
+                      aria-pressed={category === item.id}
+                      onClick={() => {
+                        setShowMoreCollections(false);
+                        selectDhikrCategory(item.id);
+                      }}
+                    >
+                      <strong>{item.label}</strong>
+                      <span>{item.description}</span>
+                      <small>{formatCategoryCount(item)}</small>
+                    </button>
+                  ))}
+                </div>
+              )}
               <div className="selected-collection-title">
                 <h3 key={hasSearchQuery ? "search" : category}>
                   <span>القسم الحالي</span>
@@ -990,6 +1080,7 @@ export default function App() {
                 <EmptyState text="لا توجد أذكار مطابقة للبحث الحالي في هذا القسم." />
               )}
             </div>
+            )}
           </section>
         )}
 
@@ -1088,7 +1179,15 @@ export default function App() {
 
             {quranIndexOpen && (
               <div className="quran-index-overlay" role="presentation" onClick={() => setQuranIndexOpen(false)}>
-                <aside className="quran-index-drawer" role="dialog" aria-modal="true" aria-label="فهرس المصحف" onClick={(event) => event.stopPropagation()}>
+                <aside
+                  className="quran-index-drawer"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="فهرس المصحف"
+                  onClick={(event) => event.stopPropagation()}
+                  onTouchStart={handleQuranIndexTouchStart}
+                  onTouchEnd={handleQuranIndexTouchEnd}
+                >
                   <div className="quran-index-head">
                     <div>
                       <span>فهرس المصحف</span>
