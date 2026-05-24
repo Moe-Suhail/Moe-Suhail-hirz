@@ -1482,6 +1482,18 @@ svg {
   scrollbar-width: thin;
 }
 
+.dhikr-card.short-dhikr .dhikr-text {
+  align-self: center;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+  overflow: visible;
+}
+
+.dhikr-card.short-dhikr .dhikr-text p {
+  max-width: 760px;
+}
+
 .dhikr-text p {
   margin: 0;
 }
