@@ -1415,12 +1415,20 @@ svg {
 .dhikr-card {
   background: var(--warm-glass);
   width: 100%;
-  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  grid-template-rows: auto auto auto auto auto;
   min-height: clamp(500px, 62svh, 640px);
-  max-height: clamp(500px, 68svh, 680px);
+  max-height: none;
 }
 
 .dhikr-card.guidance-card {
+  grid-template-rows: auto auto auto auto;
+}
+
+.dhikr-card.short-dhikr {
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+}
+
+.dhikr-card.guidance-card.short-dhikr {
   grid-template-rows: auto minmax(0, 1fr) auto auto;
 }
 
@@ -1476,10 +1484,9 @@ svg {
   display: grid;
   gap: 10px;
   min-height: 0;
-  overflow: auto;
-  overscroll-behavior: contain;
+  overflow: visible;
+  overscroll-behavior: auto;
   padding-inline-end: 4px;
-  scrollbar-width: thin;
 }
 
 .dhikr-card.short-dhikr .dhikr-text {
@@ -1520,10 +1527,9 @@ svg {
     linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 250, 239, 0.28)),
     rgba(255, 250, 239, 0.36);
   border-radius: 10px;
-  max-height: 148px;
-  overflow: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
+  max-height: none;
+  overflow: visible;
+  overscroll-behavior: auto;
 }
 
 .dhikr-note span {
@@ -3242,11 +3248,11 @@ svg {
 
   .dhikr-card {
     min-height: min(62svh, 560px);
-    max-height: min(68svh, 620px);
+    max-height: none;
   }
 
   .dhikr-note {
-    max-height: 122px;
+    max-height: none;
     font-size: 13.5px;
   }
 
@@ -3897,7 +3903,7 @@ svg {
 
   .content.dhikr-focus .dhikr-card {
     min-height: min(60svh, 560px);
-    max-height: min(66svh, 620px);
+    max-height: none;
   }
 
   .content.dhikr-focus .dhikr-reader-controls {
