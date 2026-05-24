@@ -40,7 +40,8 @@ export default function DhikrCard({ item, count, isFavorite, onFavorite, onIncre
   const isCountable = Number.isFinite(target) && target > 0 && item.kind !== "guidance" && item.kind !== "dua";
   const done = isCountable && count >= target;
   const formattedText = formatDhikrText(item.text);
-  const cardClassName = `dhikr-card${isCountable ? "" : " guidance-card"}`;
+  const isShortText = formattedText.body.length <= 170 && !formattedText.istiadhah;
+  const cardClassName = `dhikr-card${isCountable ? "" : " guidance-card"}${isShortText ? " short-dhikr" : ""}`;
   const noteTitle = item.kind === "guidance" ? "فضل أو حديث صحيح" : "فضل أو حديث مرتبط";
   const guidanceLabel = item.kind === "guidance" ? "نص فضل وحث بلا عداد" : "دعاء بلا عدد محدد";
 
