@@ -36,11 +36,16 @@ function formatDhikrText(text) {
 }
 
 export default function DhikrCard({ item, count, isFavorite, onFavorite, onIncrement, onReset }) {
-  const done = count >= item.target;
+  const target = Number(item.target);
+  const isCountable = Number.isFinite(target) && target > 0 && item.kind !== "guidance" && item.kind !== "dua";
+  const done = isCountable && count >= target;
   const formattedText = formatDhikrText(item.text);
+  const cardClassName = `dhikr-card${isCountable ? "" : " guidance-card"}`;
+  const noteTitle = item.kind === "guidance" ? "فضل أو حديث صحيح" : "فضل أو حديث مرتبط";
+  const guidanceLabel = item.kind === "guidance" ? "نص فضل وحث بلا عداد" : "دعاء بلا عدد محدد";
 
   return (
-    <article className="dhikr-card">
+    <article className={cardClassName}>
       <div className="card-head">
         <span className="tag">{item.category}</span>
         <button className={`icon-btn ${isFavorite ? "active" : ""}`} type="button" onClick={onFavorite} aria-label="إضافة للمفضلة">
@@ -55,28 +60,30 @@ export default function DhikrCard({ item, count, isFavorite, onFavorite, onIncre
 
       {item.note && (
         <div className="dhikr-note">
-          <span>فضل أو حديث مرتبط</span>
+          <span>{noteTitle}</span>
           <p>{item.note}</p>
         </div>
       )}
 
       <div className="note-row">
-        <span>{item.target > 1 ? `يكرر ${item.target} مرات` : "مرة واحدة"}</span>
+        <span className={isCountable ? "repeat-badge" : ""}>{isCountable ? `×${target}` : guidanceLabel}</span>
       </div>
 
-      <div className="dhikr-actions">
-        <button className={done ? "done-btn" : "primary-btn"} type="button" onClick={onIncrement}>
-          {done ? <Check size={18} aria-hidden="true" /> : <MisbahaIcon />}
-          {done ? "تم" : "تكرار"}
-          <span className="button-count">
-            {Math.min(count, item.target)}/{item.target}
-          </span>
-        </button>
-        <button className="reset-btn" type="button" onClick={onReset} aria-label="تصفير عداد الذكر">
-          <RotateCcw size={17} aria-hidden="true" />
-          تصفير
-        </button>
-      </div>
+      {isCountable && (
+        <div className="dhikr-actions">
+          <button className={done ? "done-btn" : "primary-btn"} type="button" onClick={onIncrement}>
+            {done ? <Check size={18} aria-hidden="true" /> : <MisbahaIcon />}
+            {done ? "تم" : "تكرار"}
+            <span className="button-count">
+              {Math.min(count, target)}/{target}
+            </span>
+          </button>
+          <button className="reset-btn" type="button" onClick={onReset} aria-label="تصفير عداد الذكر">
+            <RotateCcw size={17} aria-hidden="true" />
+            تصفير
+          </button>
+        </div>
+      )}
     </article>
   );
 }
