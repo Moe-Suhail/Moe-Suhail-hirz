@@ -22,9 +22,10 @@ const dhulHijjahItems = [
     category: "فضل العشر من ذي الحجة",
     categoryNumber: 900,
     duaNumber: 1,
-    text: "الله أكبر، الله أكبر، لا إله إلا الله، الله أكبر، الله أكبر، ولله الحمد.",
-    note: "فضله: صيغة مشهورة للتكبير، وفيها إعلان تعظيم الله في أيام عظيمة.",
-    target: 10,
+    text: "ما من أيام العمل الصالح فيها أحب إلى الله من هذه الأيام.",
+    note: "قالوا: يا رسول الله، ولا الجهاد في سبيل الله؟ قال: ولا الجهاد في سبيل الله إلا رجل خرج بنفسه وماله فلم يرجع من ذلك بشيء. رواه البخاري.",
+    target: null,
+    kind: "guidance",
     collectionId: "dhul-hijjah",
     collectionLabel: "فضل العشر من ذي الحجة"
   },
@@ -33,9 +34,10 @@ const dhulHijjahItems = [
     category: "فضل العشر من ذي الحجة",
     categoryNumber: 900,
     duaNumber: 2,
-    text: "سبحان الله، والحمد لله، ولا إله إلا الله، والله أكبر.",
-    note: "فضله: يجمع التسبيح والتحميد والتهليل والتكبير، وهي من أجل الأذكار في الأيام الفاضلة.",
-    target: 10,
+    text: "الله أكبر، الله أكبر، لا إله إلا الله، الله أكبر، الله أكبر، ولله الحمد.",
+    note: "من صيغ التكبير المشهورة في عشر ذي الحجة وأيام التشريق، والمقصود الإكثار منها بلا عدد محدد.",
+    target: null,
+    kind: "guidance",
     collectionId: "dhul-hijjah",
     collectionLabel: "فضل العشر من ذي الحجة"
   },
@@ -44,9 +46,10 @@ const dhulHijjahItems = [
     category: "فضل العشر من ذي الحجة",
     categoryNumber: 900,
     duaNumber: 3,
-    text: "اللهم اغفر لي وارحمني وتب علي إنك أنت التواب الرحيم.",
-    note: "فضله: يكثر الدعاء والاستغفار في يوم عرفة، وصيامه لغير الحاج من آكد أعمال العشر.",
-    target: 1,
+    text: "فأكثروا فيهن من التهليل والتكبير والتحميد.",
+    note: "ورد في فضل أيام العشر الحث على الإكثار من التهليل والتكبير والتحميد، فهي أبواب ذكر لا عدادات ثابتة.",
+    target: null,
+    kind: "guidance",
     collectionId: "dhul-hijjah",
     collectionLabel: "فضل العشر من ذي الحجة"
   },
@@ -56,8 +59,9 @@ const dhulHijjahItems = [
     categoryNumber: 900,
     duaNumber: 4,
     text: "لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير.",
-    note: "فضله: من خير الدعاء والذكر، وقد ورد في معنى: خير ما قلت أنا والنبيون من قبلي.",
-    target: 10,
+    note: "خير الدعاء دعاء يوم عرفة، وخير ما قاله النبيون: لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير.",
+    target: null,
+    kind: "guidance",
     collectionId: "dhul-hijjah",
     collectionLabel: "فضل العشر من ذي الحجة"
   },
@@ -66,11 +70,99 @@ const dhulHijjahItems = [
     category: "فضل العشر من ذي الحجة",
     categoryNumber: 900,
     duaNumber: 5,
-    text: "اللهم أعني على ذكرك وشكرك وحسن عبادتك.",
-    note: "فضله: دعاء جامع يعين على اغتنام العشر بالصلاة والقرآن والصدقة وسائر العمل الصالح.",
-    target: 1,
+    text: "صيام يوم عرفة أحتسب على الله أن يكفر السنة التي قبله والسنة التي بعده.",
+    note: "فضل صيام يوم عرفة لغير الحاج كما ورد في صحيح مسلم، وهو من أعظم أعمال العشر.",
+    target: null,
+    kind: "guidance",
     collectionId: "dhul-hijjah",
     collectionLabel: "فضل العشر من ذي الحجة"
+  }
+];
+
+const afterPrayerItems = [
+  {
+    id: "after-prayer-istighfar",
+    category: "أذكار بعد الصلاة",
+    categoryNumber: 3,
+    duaNumber: 1,
+    order: 1,
+    text: "أستغفر الله",
+    note: "كان النبي ﷺ إذا انصرف من صلاته استغفر ثلاثًا، ثم قال: اللهم أنت السلام ومنك السلام تباركت يا ذا الجلال والإكرام. رواه مسلم.",
+    source: "صحيح مسلم",
+    target: 3,
+    kind: "dhikr",
+    collectionId: "after-prayer",
+    collectionLabel: "أذكار بعد الصلاة"
+  },
+  {
+    id: "after-prayer-salam",
+    category: "أذكار بعد الصلاة",
+    categoryNumber: 3,
+    duaNumber: 2,
+    order: 2,
+    text: "اللهم أنت السلام، ومنك السلام، تباركت يا ذا الجلال والإكرام",
+    note: "من الذكر الثابت بعد السلام من الصلاة في صحيح مسلم.",
+    source: "صحيح مسلم",
+    target: 1,
+    kind: "dhikr",
+    collectionId: "after-prayer",
+    collectionLabel: "أذكار بعد الصلاة"
+  },
+  {
+    id: "after-prayer-subhanallah",
+    category: "أذكار بعد الصلاة",
+    categoryNumber: 3,
+    duaNumber: 3,
+    order: 3,
+    text: "سبحان الله",
+    note: "من حديث أبي هريرة رضي الله عنه: من سبح الله دبر كل صلاة ثلاثًا وثلاثين. رواه مسلم.",
+    source: "صحيح مسلم",
+    target: 33,
+    kind: "dhikr",
+    collectionId: "after-prayer",
+    collectionLabel: "أذكار بعد الصلاة"
+  },
+  {
+    id: "after-prayer-alhamdulillah",
+    category: "أذكار بعد الصلاة",
+    categoryNumber: 3,
+    duaNumber: 4,
+    order: 4,
+    text: "الحمد لله",
+    note: "من حديث أبي هريرة رضي الله عنه: وحمد الله ثلاثًا وثلاثين. رواه مسلم.",
+    source: "صحيح مسلم",
+    target: 33,
+    kind: "dhikr",
+    collectionId: "after-prayer",
+    collectionLabel: "أذكار بعد الصلاة"
+  },
+  {
+    id: "after-prayer-allahuakbar",
+    category: "أذكار بعد الصلاة",
+    categoryNumber: 3,
+    duaNumber: 5,
+    order: 5,
+    text: "الله أكبر",
+    note: "من حديث أبي هريرة رضي الله عنه: وكبر الله ثلاثًا وثلاثين. رواه مسلم.",
+    source: "صحيح مسلم",
+    target: 33,
+    kind: "dhikr",
+    collectionId: "after-prayer",
+    collectionLabel: "أذكار بعد الصلاة"
+  },
+  {
+    id: "after-prayer-tahleel",
+    category: "أذكار بعد الصلاة",
+    categoryNumber: 3,
+    duaNumber: 6,
+    order: 6,
+    text: "لا إله إلا الله وحده لا شريك له، له الملك وله الحمد، وهو على كل شيء قدير",
+    note: "تمام حديث التسبيح والتحميد والتكبير بعد الصلاة: غفرت خطاياه وإن كانت مثل زبد البحر. رواه مسلم.",
+    source: "صحيح مسلم",
+    target: 1,
+    kind: "dhikr",
+    collectionId: "after-prayer",
+    collectionLabel: "أذكار بعد الصلاة"
   }
 ];
 
@@ -129,6 +221,16 @@ function stripHtml(value = "") {
     .trim();
 }
 
+function cleanRepeatInstruction(value = "") {
+  return value
+    .replace(/\s*[-–—،,؛:]?\s*(?:تكرر|يكرر|كرر|كررها|يقال|تقال)\s*(?:\(?\s*)?(?:ثلاثا وثلاثين|ثلاثاً وثلاثين|ثلاث وثلاثين|اربعا وثلاثين|أربعا وثلاثين|أربعاً وثلاثين|ثلاثين|ثلاثا|ثلاثاً|ثلاث|سبعا|سبعاً|سبع|عشرا|عشراً|عشر|مرة|مره|\d{1,3}|[٠-٩]{1,3}|[۰-۹]{1,3})\s*(?:مرات|مرة|مره)?\s*[\).،؛:]?/g, " ")
+    .replace(/\(\s*(?:ثلاثا وثلاثين|ثلاثاً وثلاثين|ثلاث وثلاثين|اربعا وثلاثين|أربعا وثلاثين|أربعاً وثلاثين|ثلاثين|ثلاثا|ثلاثاً|ثلاث|سبعا|سبعاً|سبع|عشرا|عشراً|عشر|\d{1,3}|[٠-٩]{1,3}|[۰-۹]{1,3})\s*(?:مرات|مرة|مره)?\s*\)/g, " ")
+    .replace(/\s+\*/g, " ")
+    .replace(/\*\s+/g, " ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 function extractArabicReference(body = "", text = "") {
   const cleanBody = stripHtml(body);
   const cleanText = stripHtml(text);
@@ -146,8 +248,23 @@ function detectRepeat(text) {
     return Number(numericMatch[1]);
   }
 
-  const match = repeatWords.find(([word]) => cleanText.includes(word));
+  const match = [...repeatWords].sort((a, b) => b[0].length - a[0].length).find(([word]) => cleanText.includes(word));
   return match ? match[1] : 1;
+}
+
+function normalizeCollectionKind(collectionId, item) {
+  if (collectionId === "forgiveness") {
+    return {
+      ...item,
+      target: null,
+      kind: "guidance",
+      note: item.note || "الاستغفار باب مفتوح بلا عدد محدد، وما ثبت له عدد مخصوص يظهر في موضعه بنصه."
+    };
+  }
+  return {
+    ...item,
+    kind: "dhikr"
+  };
 }
 
 function makeDuaKey(value, fallback) {
@@ -164,7 +281,7 @@ function normalizeDua(dua, index = 0) {
   const duaNumber = Number.parseInt(String(dua.number || index + 1), 10) || index + 1;
   const rawBody = dua.ar?.body || dua.en?.body || "";
   const body = stripHtml(rawBody);
-  const text = stripHtml(dua.ar?.text || body || "");
+  const text = cleanRepeatInstruction(stripHtml(dua.ar?.text || body || ""));
   const note = extractArabicReference(rawBody, text);
 
   return {
@@ -209,19 +326,22 @@ export async function fetchAllDhikr() {
 
   const collections = responses.map((result, index) => {
     const collection = apiCollections[index];
+    if (collection.id === "after-prayer") {
+      return { ...collection, count: afterPrayerItems.length, items: afterPrayerItems };
+    }
     if (result.status !== "fulfilled") {
       return { ...collection, count: 0, items: [] };
     }
     const items = (result.value.data?.duas || []).map((dua, duaIndex) => {
       const normalized = normalizeDua(dua, duaIndex);
-      return {
+      return normalizeCollectionKind(collection.id, {
         ...normalized,
         id: `${collection.id}-${normalized.id}`,
         collectionOrder: index + 1,
         category: collection.label,
         collectionId: collection.id,
         collectionLabel: collection.label
-      };
+      });
     }).map((item) => (collection.id === "evening" ? applyEveningWording(item) : item));
     return { ...collection, count: items.length, items };
   });
