@@ -3902,22 +3902,24 @@ svg {
   }
 
   .content.dhikr-focus .dhikr-card {
-    min-height: min(60svh, 560px);
+    min-height: min(54svh, 520px);
     max-height: none;
   }
 
+  .content.dhikr-focus .dhikr-card.short-dhikr {
+    min-height: clamp(350px, 48svh, 470px);
+  }
+
   .content.dhikr-focus .dhikr-reader-controls {
-    position: sticky;
-    bottom: 104px;
-    z-index: 2;
-    padding-block: 6px;
-    background: linear-gradient(180deg, transparent, rgba(248, 245, 234, 0.76) 32%, rgba(248, 245, 234, 0.92));
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    position: static;
+    padding-block: 4px 0;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   :root[data-theme="dark"] .content.dhikr-focus .dhikr-reader-controls {
-    background: linear-gradient(180deg, transparent, rgba(21, 36, 31, 0.78) 32%, rgba(21, 36, 31, 0.94));
+    background: transparent;
   }
 
   .quran-index-drawer {
@@ -3999,6 +4001,89 @@ svg {
     inset-inline-end: -42px;
     inset-block-end: -36px;
     transform: rotate(12deg);
+  }
+
+  :root[data-theme="dark"] .smart-footer-progress {
+    border-color: rgba(225, 189, 114, 0.26);
+    background:
+      radial-gradient(circle at 88% 12%, rgba(225, 189, 114, 0.13), transparent 30%),
+      linear-gradient(145deg, rgba(66, 96, 84, 0.56), rgba(24, 41, 35, 0.82)),
+      rgba(20, 32, 27, 0.76);
+    box-shadow:
+      inset 0 1px 0 rgba(244, 250, 246, 0.14),
+      0 22px 46px rgba(3, 12, 9, 0.3);
+  }
+
+  :root[data-theme="dark"] .smart-footer-progress::after {
+    opacity: 0.2;
+  }
+
+  :root[data-theme="dark"] .smart-footer-progress .daily-progress-head span,
+  :root[data-theme="dark"] .smart-footer-progress .daily-progress-head strong {
+    color: #f5faf6;
+  }
+
+  :root[data-theme="dark"] .smart-footer-progress .split-progress::before {
+    border-color: rgba(226, 244, 236, 0.16);
+    background: rgba(226, 244, 236, 0.12);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.24);
+  }
+
+  :root[data-theme="dark"] .smart-footer-progress .split-progress-half span {
+    background: linear-gradient(90deg, #d6b76a, #87b8a7);
+    box-shadow: 0 0 14px rgba(214, 183, 106, 0.2);
+  }
+
+  :root[data-theme="dark"] .smart-footer-progress .split-progress i {
+    background: #31483f;
+    color: #e1bd72;
+    box-shadow: 0 0 0 4px rgba(21, 36, 31, 0.78);
+  }
+
+  :root[data-theme="dark"] .smart-footer-progress .split-progress i.done {
+    background: #4a9a7d;
+    color: #fff;
+  }
+
+  :root[data-theme="dark"] .smart-footer-progress .daily-progress-labels::before {
+    background: rgba(225, 189, 114, 0.26);
+  }
+
+  :root[data-theme="dark"] .smart-footer-progress .daily-progress-labels span {
+    border-color: rgba(226, 244, 236, 0.16);
+    background: rgba(226, 244, 236, 0.09);
+    color: #e9f3ed;
+  }
+
+  :root[data-theme="dark"] .smart-footer-dedication {
+    border-color: rgba(225, 189, 114, 0.22);
+    background:
+      radial-gradient(circle at 82% 16%, rgba(225, 189, 114, 0.11), transparent 30%),
+      linear-gradient(145deg, rgba(55, 83, 73, 0.52), rgba(20, 32, 27, 0.8)),
+      rgba(20, 32, 27, 0.72);
+    box-shadow:
+      inset 0 1px 0 rgba(244, 250, 246, 0.12),
+      0 18px 38px rgba(3, 12, 9, 0.26);
+  }
+
+  :root[data-theme="dark"] .smart-footer-dedication p {
+    color: #d2dfd8;
+  }
+
+  :root[data-theme="dark"] .smart-footer-dedication strong {
+    color: #f5faf6;
+  }
+
+  :root[data-theme="dark"] .all-adhkar-card,
+  :root[data-theme="dark"] .all-adhkar-drawer {
+    border-color: rgba(225, 189, 114, 0.2);
+    background:
+      linear-gradient(145deg, rgba(226, 244, 236, 0.13), rgba(225, 189, 114, 0.05)),
+      rgba(20, 32, 27, 0.62);
+  }
+
+  :root[data-theme="dark"] .all-adhkar-card strong {
+    color: #f5faf6;
   }
 }
 
