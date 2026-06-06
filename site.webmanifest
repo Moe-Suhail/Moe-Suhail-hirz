@@ -1,0 +1,25 @@
+{
+  "name": "حِرز - أذكار وقرآن",
+  "short_name": "حِرز",
+  "description": "تطبيق مجاني للأذكار والقرآن والمصحف الكريم.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fffdf4",
+  "theme_color": "#12352f",
+  "icons": [
+    {
+      "src": "./assets/branding/hirz-symbol.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/branding/hirz-symbol-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

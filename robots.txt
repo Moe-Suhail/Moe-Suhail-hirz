@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://moe-suhail.github.io/Moe-Suhail-hirz/sitemap.xml
